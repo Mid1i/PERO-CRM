@@ -52,17 +52,23 @@
 				background: $--box-shadow;
 				border-left: 5px solid $--blue;
 				color: $--blue;
-				transition: none;
 
-				.menu-item__icon {
-					color: $--blue;
+				& .menu-item__icon:deep(.stroke) {
+					stroke: $--blue;
+				}
+
+				& .menu-item__icon:deep(.fill) {
+					fill: $--blue;
 				}
 			}
 		}
 
-		&__icon {
-			color: $--text-secondary;
-			transition: transform 0.1s ease-in-out;
+		&__icon:deep(.stroke) {
+			stroke: currentColor;
+		}
+
+		&__icon:deep(.fill) {
+			fill: currentColor;
 		}
 
 		&__text {
@@ -77,6 +83,14 @@
 		.menu-item:hover .menu-item__text {
 			color: $--blue;
 			transform: translateX(10px);
+		}
+
+		.menu-item:hover .menu-item__icon:deep(.stroke) {
+			stroke: $--blue;
+		}
+
+		.menu-item:hover .menu-item__icon:deep(.fill) {
+			fill: $--blue;
 		}
 	}
 </style>

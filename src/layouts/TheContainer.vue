@@ -1,6 +1,6 @@
 <script setup lang="ts">
 	import TheSidebar from "./TheSidebar.vue";
-	// import TheHeader from "@/layouts/TheHeader.vue";
+	import TheHeader from "@/layouts/TheHeader.vue";
 </script>
 
 
@@ -8,7 +8,7 @@
 	<div class="container">
 		<TheSidebar/>
 		<main class="container__content">
-			<!-- <TheHeader/> -->
+			<TheHeader/>
 			<slot></slot>
 		</main>
 	</div>
@@ -29,6 +29,7 @@
 			display: flex;
 			flex: 1 0 auto;
 			flex-direction: column;
+			gap: 40px;
 		}
 	}
 </style>
