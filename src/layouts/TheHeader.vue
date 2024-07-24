@@ -1,27 +1,13 @@
 <script setup lang="ts">
-	import { ref, onBeforeMount } from "vue";
+	import { Ref, inject } from "vue";
+	import type { TypeThemes } from "@/types/TypeThemes";
 	import { useRoute } from "vue-router";
-
-
-	type TypeTheme = "dark" | "light";
 
 
 	const router = useRoute();
 
-	const theme = ref<TypeTheme>("dark");
-
-
-	const switchTheme = (currentTheme: TypeTheme): void => {
-		document.documentElement.setAttribute("data-theme", currentTheme);
-		localStorage.setItem("theme", currentTheme);
-		theme.value = currentTheme;
-	}
-
-
-	onBeforeMount((): void => {
-		const storageTheme = localStorage.getItem("theme");
-		(storageTheme === "dark" || storageTheme === "light") && switchTheme(storageTheme);
-	})
+	const theme = <Ref<TypeThemes>>inject("theme");
+	const switchTheme = <(currentTheme: TypeThemes) => void>inject("switchTheme");
 </script>
 
 

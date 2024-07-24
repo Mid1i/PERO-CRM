@@ -56,7 +56,7 @@ const routes = [
 		component: () => import("@/views/Kanban.vue"),
 		meta: {
 			title: "Канбан - PERO CRM",
-			headerTitle: "Канбан"
+			headerTitle: "Канбан доска"
 		}
 	},
 	{
