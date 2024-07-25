@@ -3,4 +3,4 @@ export interface IWidget {
 	percentage: number,
 	title: "Общие продажи" | "Общие затраты" | "Общая выручка",
 	value: number
-}
+};

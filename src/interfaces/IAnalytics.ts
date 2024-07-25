@@ -3,4 +3,4 @@ export interface IAnalytics {
 	title: "Онлайн заказы" | "Офлайн заказы" | "Новые пользователи",
 	previousValue: number
 	value: number,
-}
+};

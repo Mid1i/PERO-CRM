@@ -1,0 +1,1 @@
+export type TypeWeekDays = "Пн" | "Вт" | "Ср" | "Чт" | "Пт" | "Сб" | "Вс";

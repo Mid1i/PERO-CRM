@@ -1,9 +1,20 @@
 <script setup lang="ts">
+	import { Ref, computed, inject } from "vue";
+	import { RouterLink } from "vue-router";
+	import type { IRecentOrder } from "@/interfaces/IRecentOrder";
+	import type { IChartColors } from "@/interfaces/IChartColors"
 	import type { IAnalytics } from "@/interfaces/IAnalytics";
+	import type { TypeWeekDays } from "@/types/TypeWeekDays";
+	import type { TypeThemes } from "@/types/TypeThemes";
 	import type { IWidget } from "@/interfaces/IWidget";
+	import RecentOrder from "@/components/RecentOrder.vue";
+	import WeekChart from "@/components/WeekChart.vue";
 	import Analytics from "@/components/Analytics.vue";
 	import Widget from "@/components/Widget.vue";
+	import { chartConfig } from "@/plugins/chartConfig";
 
+
+	const theme = <Ref<TypeThemes>>inject("theme");
 
 	const WIDGETS: IWidget[] = [
 		{
@@ -72,7 +83,91 @@
 			previousValue: 219,
 			value: 400
 		}
-	]
+	];
+
+	const RECENT_ORDERS: IRecentOrder[] = [
+		{
+			id: 10,
+			creationDate: "20.07.2024",
+			totalPrice: 10233,
+			status: "Оплачен"
+		},
+		{
+			id: 11,
+			creationDate: "20.07.2024",
+			totalPrice: 15423,
+			status: "Доставлен"
+		},
+		{
+			id: 12,
+			creationDate: "22.07.2024",
+			totalPrice: 5200,
+			status: "Доставлен"
+		},
+		{
+			id: 13,
+			creationDate: "21.07.2024",
+			totalPrice: 7103,
+			status: "Отменен"
+		},
+		{
+			id: 14,
+			creationDate: "21.07.2024",
+			totalPrice: 5895,
+			status: "Доставлен"
+		},
+		{
+			id: 15,
+			creationDate: "22.07.2024",
+			totalPrice: 9999,
+			status: "Оплачен"
+		},
+		{
+			id: 16,
+			creationDate: "22.07.2024",
+			totalPrice: 1058,
+			status: "Оплачен"
+		}
+	];
+
+	const WEEK_SALES: number[] = [36, 75, 17, 91, 103, 47, 114];
+
+	const WEEK_USERS: number[] = [8, 10, 10, 34, 20, 53, 15];
+
+	const SALES_COLORS: IChartColors = {
+		backgroundColor: "rgb(115, 128, 236, .2)",
+		borderColor: "#7380EC",
+		pointBackgroundColor: "#7380EC"
+	}
+
+	const USERS_COLORS: IChartColors = {
+		backgroundColor: "rgb(65, 241, 182, .2)",
+		borderColor: "#41F1B6",
+		pointBackgroundColor: "#41F1B6"
+	}
+
+
+	const getLabelsForChart = computed<TypeWeekDays[]>(() => {
+		let date = new Date();
+		let days: TypeWeekDays[] = [];
+
+		for (let i = 0; i < 6; i++) {
+			const WEEK_DAYS: Record<string, TypeWeekDays> = {
+				0: "Вс",
+				1: "Пн",
+				2: "Вт",
+				3: "Ср",
+				4: "Чт",
+				5: "Пт",
+				6: "Сб"
+			};
+			
+			days.push(WEEK_DAYS[date.getDay()]);
+			date.setDate(date.getDate() - 1);
+		}
+
+		return days;
+	});
 </script>
 
 <template>
@@ -85,6 +180,23 @@
 					:="widget"
 				/>
 			</div>
+			<section class="content__left-orders">
+				<h2 class="content__title">Недавние заказы</h2>
+				<table class="content__left-table">
+					<tr class="content__left-row">
+						<th class="content__left-header">№</th>
+						<th class="content__left-header">Дата создания</th>
+						<th class="content__left-header">Сумма заказа</th>
+						<th class="content__left-header">Статус</th>
+					</tr>
+					<RecentOrder
+						v-for="order in RECENT_ORDERS"
+						:key="order.id"
+						:="order"
+					/>
+				</table>
+				<RouterLink class="content__left-button" to="/orders">Показать все</RouterLink>
+			</section>
 		</div>
 		<aside class="content__right">
 			<section class="content__right-analytics">
@@ -95,6 +207,16 @@
 					:="analytics"
 				/>
 			</section>
+			<WeekChart
+				title="Продажи"
+				:config="chartConfig(WEEK_SALES, getLabelsForChart, SALES_COLORS, theme)"
+				id="sales"
+			/>
+			<WeekChart
+				title="Новые пользователи"
+				:config="chartConfig(WEEK_USERS, getLabelsForChart, USERS_COLORS, theme)"
+				id="users"
+			/>
 		</aside>
 	</main>
 </template>
@@ -110,6 +232,7 @@
 
 		&__title {
 			@include h2;
+			z-index: 1;
 		}
 
 		&__left {
@@ -121,6 +244,38 @@
 			&-widgets {
 				display: flex;
 				gap: 40px;
+			}
+
+			&-orders {
+				display: flex;
+				flex-direction: column;
+				gap: 20px;
+			}
+
+			&-table {
+				@include layout;
+				width: 100%;
+			}
+
+			&-row {
+				display: grid;
+				grid-template-columns: repeat(5, 1fr);
+				gap: 20px;
+			}
+
+			&-header {
+				@include h3;
+				text-align: left;
+			}
+
+			&-button {
+				align-self: center;
+
+				@include text;
+				color: $--blue;
+				font-size: 16px;
+
+				z-index: 1;
 			}
 		}
 
@@ -139,6 +294,13 @@
 				flex-direction: column;
 				gap: 10px;
 			}
+		}
+	}
+
+
+	@media(hover: hover) {
+		.content__left-button:hover {
+			text-decoration: underline;
 		}
 	}
 </style>
