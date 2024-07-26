@@ -36,15 +36,14 @@
 				ctx.fillText(`${percentage} %`, width / 2, height / 2);
 			}
 
-			const animateProgress = () => {
+			const animateProgress = (): void => {
 				ctx.clearRect(0, 0, width, height);
 				drawCircle(currentPercentage);
 				drawText(currentPercentage);
 	
 				if (currentPercentage < props.percentage) {
 					currentPercentage += 2;
-					if (currentPercentage > props.percentage) currentPercentage = props.percentage;
-
+					currentPercentage > props.percentage && (currentPercentage = props.percentage);
 					requestAnimationFrame(animateProgress);
 				}
 			}
@@ -131,7 +130,7 @@
 
 		&__progress {
 			position: absolute;
-			right: 25px;
+			right: 20px;
 			top: 55%;
 			
 			transform: translateY(-50%);

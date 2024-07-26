@@ -40,7 +40,7 @@
 		padding: 20px 0px;
 
 		&:not(:last-child) {
-			border-bottom: 1px solid $--black;
+			border-bottom: 1px solid $--background-primary;
 		}
 
 		&__item {

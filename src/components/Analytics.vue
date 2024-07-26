@@ -7,6 +7,7 @@
 
 	const percentage = ref(0);
 
+	
 	const animatePercentage = (): void => {
 		const calculatedPercentage = Math.ceil(props.value / props.previousValue * 100 - 100);
 		const startTime = performance.now();

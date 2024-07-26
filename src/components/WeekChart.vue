@@ -1,48 +1,38 @@
 <script setup lang="ts">
 	import { Ref, ref, onMounted, onUpdated, onUnmounted, inject } from "vue";
-	import { InteractionItem, Chart, ChartConfiguration } from "chart.js/auto";
-	import type { TypeThemes } from "@/types/TypeThemes"
+	import { Chart, ChartConfiguration } from "chart.js/auto";
+	import type { TypeThemes } from "@/types/TypeThemes";
 	import { onDrawDatasets } from "@/plugins/chartDatasetDraw";
-	import { onChartHover } from "@/plugins/chartHoverEffect";
 
 
 	const props = defineProps<{
 		title: string,
-		config: ChartConfiguration,
-		id: "sales" | "users"
+		config: ChartConfiguration
 	}>();
 	
 
 	const theme = <Ref<TypeThemes>>inject("theme");
 	const canvasRef = ref<HTMLCanvasElement | null>(null);
-	const hoveredPoint = ref<InteractionItem | null>(null);
 
 	let chart: Chart | null = null;
 	
 
-	const hoverListener = (event: Event): void => {
-		chart && (hoveredPoint.value = onChartHover(event, chart));
-	}
-
 	const destroyChart = (): void => { 
 		chart && chart.destroy();
-		canvasRef.value && canvasRef.value.removeEventListener("mousemove", hoverListener);
 	}
 
 	const createChart = (): void => {
 		if (canvasRef.value) {
 			destroyChart();
 			
-			if (!Chart.registry.plugins.get(`afterDatasetsDraw-${props.id}`)) {
+			if (!Chart.registry.plugins.get("afterDatasetsDraw")) {
 				Chart.register({
-					id: `afterDatasetsDraw-${props.id}`,
-					afterDatasetsDraw: (chart: Chart) => onDrawDatasets(chart, hoveredPoint.value, theme.value)
+					id: "afterDatasetsDraw",
+					afterDatasetsDraw: (chart: Chart): void => onDrawDatasets(chart, theme.value)
 				});
 			}
 			
-				
 			chart = new Chart(canvasRef.value, props.config);
-			canvasRef.value.addEventListener("mousemove", hoverListener);
 		}
 	}
 
