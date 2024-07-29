@@ -2,6 +2,7 @@ import type { IRecentOrder } from "@/interfaces/IRecentOrder";
 import type { IChartColors } from "@/interfaces/IChartColors"
 import type { IAnalytics } from "@/interfaces/IAnalytics";
 import type { IWidget } from "@/interfaces/IWidget";
+import type { IUser } from "@/interfaces/IUser";
 
 
 export const WIDGETS: IWidget[] = [
@@ -132,4 +133,25 @@ export const USERS_COLORS: IChartColors = {
 	backgroundColor: "rgb(65, 241, 182, .2)",
 	borderColor: "#41F1B6",
 	pointBackgroundColor: "#41F1B6"
+}
+
+export const USERS_TABLE_HEADERS = ["Логин", "Почта", "Номер телефона", "Страна", "Дата рождения", "Дата регистрации"];
+
+export const USER: IUser = {
+	login: "midi",
+	email: "testtest@mail.ru",
+	phone: 79626373903,
+	country: "Россия",
+	dateOfBirth: "30.08.2003",
+	dateOfRegistration: "26.07.2024"
+};
+
+export const USERS: IUser[] = new Array(100).fill(USER);
+
+export const ACTIVE_TIME: number[] = [50, 20, 120, 60];
+
+export const TIME_COLORS: IChartColors = {
+	backgroundColor: "rgb(255, 119, 130, .2)",
+	borderColor: "#FF7782",
+	pointBackgroundColor: "#FF7782"
 }

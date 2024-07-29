@@ -10,6 +10,8 @@
 	box-sizing: border-box;
 
 	transition: background 0.1s ease-in-out, border 0.1s ease-in-out, box-shadow 0.1s ease-in-out, color 0.1s ease-in-out, transform 0.1s ease-in-out, font-weight 0.1s ease-in-out;
+
+	user-select: none;
 }	
 
 *:focus, 

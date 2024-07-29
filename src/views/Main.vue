@@ -1,13 +1,13 @@
 <script setup lang="ts">
-	import { Ref, computed, inject } from "vue";
+	import { Ref, inject } from "vue";
 	import { RouterLink } from "vue-router";
-	import type { TypeWeekDays } from "@/types/TypeWeekDays";
 	import type { TypeThemes } from "@/types/TypeThemes";
 	import RecentOrder from "@/components/RecentOrder.vue";
 	import WeekChart from "@/components/WeekChart.vue";
 	import Analytics from "@/components/Analytics.vue";
 	import Widget from "@/components/Widget.vue";
 	import { chartConfig } from "@/plugins/chartConfig";
+	import { getLabelsForChart } from "@/helpers/charts";
 	import { 
 		ANALYTICS, 
 		RECENT_ORDERS, 
@@ -20,29 +20,6 @@
 
 
 	const theme = <Ref<TypeThemes>>inject("theme");
-
-
-	const getLabelsForChart = computed<TypeWeekDays[]>(() => {
-		let date = new Date();
-		let days: TypeWeekDays[] = [];
-
-		for (let i = 0; i < 6; i++) {
-			const WEEK_DAYS: Record<string, TypeWeekDays> = {
-				0: "Вс",
-				1: "Пн",
-				2: "Вт",
-				3: "Ср",
-				4: "Чт",
-				5: "Пт",
-				6: "Сб"
-			};
-			
-			days.push(WEEK_DAYS[date.getDay()]);
-			date.setDate(date.getDate() - 1);
-		}
-
-		return days;
-	});
 </script>
 
 <template>
@@ -84,11 +61,11 @@
 			</section>
 			<WeekChart
 				title="Продажи"
-				:config="chartConfig(WEEK_SALES, getLabelsForChart, SALES_COLORS, theme)"
+				:config="chartConfig(WEEK_SALES, getLabelsForChart(), SALES_COLORS, theme)"
 			/>
 			<WeekChart
 				title="Новые пользователи"
-				:config="chartConfig(WEEK_USERS, getLabelsForChart, USERS_COLORS, theme)"
+				:config="chartConfig(WEEK_USERS, getLabelsForChart(), USERS_COLORS, theme)"
 			/>
 		</aside>
 	</main>

@@ -15,13 +15,13 @@
 	}
 
 	provide("theme", theme);
-	provide("switchTheme", switchTheme)
+	provide("switchTheme", switchTheme);
 
 
 	onBeforeMount((): void => {
 		const storageTheme = localStorage.getItem("theme");
 		(storageTheme === "dark" || storageTheme === "light") && switchTheme(storageTheme);
-	})
+	});
 </script>
 
 

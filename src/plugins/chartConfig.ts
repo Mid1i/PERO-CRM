@@ -1,10 +1,9 @@
 import { ChartConfiguration } from "chart.js";
 import type { TypeThemes } from "@/types/TypeThemes";
-import type { TypeWeekDays } from "@/types/TypeWeekDays";
 import { IChartColors } from "@/interfaces/IChartColors";
 
 
-export const chartConfig = (data: number[], labels: TypeWeekDays[], colors: IChartColors, theme: TypeThemes): ChartConfiguration => ({
+export const chartConfig = (data: number[], labels: string[], colors: IChartColors, theme: TypeThemes): ChartConfiguration => ({
 	type: "line",
 	data: {
 		labels: labels,
