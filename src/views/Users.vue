@@ -1,6 +1,7 @@
 <script setup lang="ts">
 	import { Ref, inject, ref, computed } from "vue";
 	import type { TypeThemes } from "@/types/TypeThemes";
+	import UsersDoughnutChart from "@/components/UsersDoughnutChart.vue";
 	import UsersTableHeader from "@/components/UsersTableHeader.vue";
 	import UsersTableItem from "@/components/UsersTableItem.vue";
 	import Pagination from "@/components/Pagination.vue";
@@ -8,9 +9,7 @@
 	import { getLabelsForChart } from "@/helpers/charts";
 	import { chartConfig } from "@/plugins/chartConfig";
 	import { getWordByAmount } from "@/helpers/words";
-	import { 
-		ACTIVE_TIME,
-		TIME_COLORS,
+	import {
 		USERS,
 		USERS_COLORS, 
 		USERS_TABLE_HEADERS, 
@@ -70,13 +69,29 @@
 				</svg>
 				Добавить пользователя
 			</button>
+			<div class="content__right-charts">
+				<h3 class="content__right-title">Общая статистика по пользователям</h3>
+				<div class="content__right-row">
+					<UsersDoughnutChart
+						:data="[55, 45]"
+						:colors="['rgb(115, 128, 236)', 'rgb(255, 119, 130)']"
+						:labels="['Мужчины', 'Женщины']"
+					/>
+					<UsersDoughnutChart
+						:data="[60, 15, 25]"
+						:colors="['rgb(115, 128, 236)', 'rgb(65, 241, 182)', 'rgb(255, 187, 85)']"
+						:labels="['Россия', 'Белоруссия', 'Другие']"
+					/>
+					<UsersDoughnutChart
+						:data="[40, 40, 20]"
+						:colors="['rgb(65, 241, 182)', 'rgb(255, 187, 85)', 'rgb(255, 119, 130)']"
+						:labels="['18-30 лет', '30-60 лет', '60+ лет']"
+					/>
+				</div>
+			</div>
 			<WeekChart
 				title="Новые пользователи"
 				:config="chartConfig(WEEK_USERS, getLabelsForChart(), USERS_COLORS, theme)"
-			/>
-			<WeekChart
-				title="Самое активное время"
-				:config="chartConfig(ACTIVE_TIME, ['0:00-6:00', '6:00-12:00', '12:00-18:00', '18:00-24:00'], TIME_COLORS, theme)"
 			/>
 		</aside>
 	</main>
@@ -144,6 +159,29 @@
 
 				height: 60px;
 				width: 100%;
+
+				& .fill {
+					fill: $--blue;
+				}
+
+				& .stroke {
+					stroke: $--blue;
+				}
+			}
+
+			&-charts {
+				@include layout;
+				gap: 15px;
+			}
+
+			&-row {
+				align-items: flex-start;
+				display: flex;
+				justify-content: space-between;
+			}
+
+			&-title {
+				@include h3;
 			}
 		}
 	}

@@ -26,8 +26,13 @@ export const chartConfig = (data: number[], labels: string[], colors: IChartColo
 		],
 	},
 	options: {
-		maintainAspectRatio: true,
+		maintainAspectRatio: false,
 		responsive: true,
+		layout: {
+			padding: {
+				top: 10
+			}
+		},
 		plugins: {
 			legend: {
 				display: false

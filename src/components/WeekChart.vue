@@ -1,6 +1,6 @@
 <script setup lang="ts">
-	import { Ref, ref, onMounted, onUpdated, onUnmounted, inject } from "vue";
-	import { Chart, ChartConfiguration } from "chart.js/auto";
+	import { Ref, ref, onMounted, onUnmounted, inject, watch } from "vue";
+	import { Chart, ChartConfiguration, Plugin } from "chart.js/auto";
 	import type { TypeThemes } from "@/types/TypeThemes";
 	import { onDrawDatasets } from "@/plugins/chartDatasetDraw";
 
@@ -25,32 +25,30 @@
 		if (canvasRef.value) {
 			destroyChart();
 			
-			if (!Chart.registry.plugins.get("afterDatasetsDraw")) {
-				Chart.register({
-					id: "afterDatasetsDraw",
-					afterDatasetsDraw: (chart: Chart): void => onDrawDatasets(chart, theme.value)
-				});
+			const afterDatasetsDraw: Plugin = {
+				id: "afterDatasetsDraw",
+				afterDatasetsDraw: (chart: Chart): void => onDrawDatasets(chart, theme.value)
 			}
 			
-			chart = new Chart(canvasRef.value, props.config);
+			chart = new Chart(canvasRef.value, {
+				...props.config,
+				plugins: [afterDatasetsDraw]
+			});
 		}
 	}
 
-	onUpdated(createChart);
 	onMounted(createChart);
 	onUnmounted(destroyChart);
+	watch(theme, createChart);
 </script>
 
 
 <template>
 	<section class="chart">
 		<h3 class="chart__title">{{ title }}</h3>
-		<canvas 
-			ref="canvasRef"
-			class="chart__canvas" 
-			height="100"
-			width="325" 
-		></canvas>
+		<div class="chart__container">
+			<canvas ref="canvasRef"	class="chart__canvas"></canvas>
+		</div>
 	</section>
 </template>
 
@@ -70,8 +68,13 @@
 			@include h3;
 		}
 
+		&__container {
+			height: 110px;
+			width: 100%;
+		}
+
 		&__canvas {
-			height: 100px;
+			height: 100%;
 			width: 100%;
 		}
 	}

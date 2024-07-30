@@ -147,11 +147,3 @@ export const USER: IUser = {
 };
 
 export const USERS: IUser[] = new Array(100).fill(USER);
-
-export const ACTIVE_TIME: number[] = [50, 20, 120, 60];
-
-export const TIME_COLORS: IChartColors = {
-	backgroundColor: "rgb(255, 119, 130, .2)",
-	borderColor: "#FF7782",
-	pointBackgroundColor: "#FF7782"
-}

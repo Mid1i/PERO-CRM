@@ -28,7 +28,10 @@
 	<div class="pagination">
 		<svg 
 			@click="$emit('switchPage', 1)"
-			class="pagination__icon" 
+			:class="[
+				'pagination__icon',
+				currentPage === 1 && 'disabled'
+			]"
 			fill="none" 
 			height="20" 
 			viewBox="0 0 20 20" 
@@ -38,8 +41,10 @@
 		</svg>
 		<svg 
 			@click="$emit('switchPage', currentPage - 1)"
-			:disabled="currentPage === 1"
-			class="pagination__icon"
+			:class="[
+				'pagination__icon',
+				currentPage === 1 && 'disabled'
+			]"
 			fill="none" 
 			height="20" 
 			viewBox="0 0 20 20" 
@@ -62,7 +67,10 @@
 		</ul>
 		<svg 
 			@click="$emit('switchPage', currentPage + 1)"
-			class="pagination__icon" 
+			:class="[
+				'pagination__icon',
+				currentPage === pages && 'disabled'
+			]" 
 			fill="none" 
 			height="20" 
 			viewBox="0 0 20 20" 
@@ -72,7 +80,10 @@
 		</svg>
 		<svg 
 			@click="$emit('switchPage', pages)"
-			class="pagination__icon" 
+			:class="[
+				'pagination__icon',
+				currentPage === pages && 'disabled'
+			]"
 			fill="none" 
 			height="20" 
 			viewBox="0 0 20 20" 
@@ -94,12 +105,11 @@
 		display: flex;
 		gap: 15px;
 
-		color: $--text-secondary;
-
 		&__icon {
 			cursor: pointer;
+			color: $--text-secondary;
 
-			&:disabled {
+			&.disabled {
 				color: $--background-primary;
 				pointer-events: none;
 			}
@@ -120,7 +130,7 @@
 				border-radius: 100%;
 
 				@include text;
-				color: inherit;
+				color: $--text-secondary;
 				cursor: pointer;
 
 				transition: background 0s, color 0.1s ease-in-out;
