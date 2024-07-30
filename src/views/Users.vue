@@ -2,8 +2,7 @@
 	import { Ref, inject, ref, computed } from "vue";
 	import type { TypeThemes } from "@/types/TypeThemes";
 	import UsersDoughnutChart from "@/components/UsersDoughnutChart.vue";
-	import UsersTableHeader from "@/components/UsersTableHeader.vue";
-	import UsersTableItem from "@/components/UsersTableItem.vue";
+	import UsersTable from "@/components/UsersTable.vue";
 	import Pagination from "@/components/Pagination.vue";
 	import WeekChart from "@/components/WeekChart.vue";
 	import { getLabelsForChart } from "@/helpers/charts";
@@ -12,7 +11,6 @@
 	import {
 		USERS,
 		USERS_COLORS, 
-		USERS_TABLE_HEADERS, 
 		WEEK_USERS, 
 	} from "@/constants";
 
@@ -32,20 +30,10 @@
   <main class="content">
 		<div class="content__left">
 			<div class="content__left-wrapper">
-				<table class="content__left-table">
-					<tr class="content__left-row">
-						<UsersTableHeader 
-							v-for="header in USERS_TABLE_HEADERS"
-							:title="header"
-							:key="header"
-						/>
-					</tr>
-					<UsersTableItem
-						v-for="user in USERS.slice((currentPage - 1) * 10, currentPage * 10)"
-						:key="user.email"
-						:="user"
-					/>
-				</table>
+				<UsersTable
+					:current-page="currentPage"
+					:users="USERS"
+				/>
 			</div>
 			<footer class="content__left-footer">
 				<Pagination 
@@ -57,18 +45,33 @@
 			</footer>
 		</div>
 		<aside class="content__right">
-			<button class="content__right-button">
-				<svg class="content__right-icon" fill="none" height="17" viewBox="0 0 16 17" width="16">
-					<path class="fill" d="M0.212758 2.11C2.24378 4.7 5.99412 9.5 5.99412 9.5V15.5C5.99412 16.05 6.44657 16.5 6.99957 16.5H9.01048C9.56348 16.5 10.0159 16.05 10.0159 15.5V9.5C10.0159 9.5 13.7562 4.7 15.7872 2.11C16.3 1.45 15.8275 0.5 14.9929 0.5H1.00707C0.17254 0.5 -0.300024 1.45 0.212758 2.11Z" fill="currentColor"/>
-				</svg>
-				Фильтры
-			</button>
-			<button class="content__right-button">
-				<svg class="content__right-icon" fill="none" height="17" viewBox="0 0 16 17" width="16">
-					<path class="stroke" d="M8 0.5V8.06787M8 8.06787V16.5M8 8.06787H0M8 8.06787H16" stroke="currentColor" stroke-width="1.5"/>
-				</svg>
-				Добавить пользователя
-			</button>
+			<div class="content__right-row">
+				<button class="content__right-button">
+					<svg fill="none" height="20" viewBox="0 0 20 20" width="20">
+						<path class="fill" d="M14.2939 12.5786H13.3905L13.0703 12.2699C14.191 10.9663 14.8656 9.27387 14.8656 7.43282C14.8656 3.32762 11.538 0 7.43282 0C3.32762 0 0 3.32762 0 7.43282C0 11.538 3.32762 14.8656 7.43282 14.8656C9.27387 14.8656 10.9663 14.191 12.2699 13.0703L12.5786 13.3905V14.2939L18.2962 20L20 18.2962L14.2939 12.5786ZM7.43282 12.5786C4.58548 12.5786 2.28702 10.2802 2.28702 7.43282C2.28702 4.58548 4.58548 2.28702 7.43282 2.28702C10.2802 2.28702 12.5786 4.58548 12.5786 7.43282C12.5786 10.2802 10.2802 12.5786 7.43282 12.5786Z"/>
+					</svg>
+				</button>
+				<button class="content__right-button">
+					<svg fill="none" height="14" viewBox="0 0 21 14" width="21">
+						<path class="fill" d="M0.25 14H6.91667V11.6667H0.25V14ZM0.25 0V2.33333H20.25V0H0.25ZM0.25 8.16667H13.5833V5.83333H0.25V8.16667Z"/>
+					</svg>
+				</button>
+				<button class="content__right-button">
+					<svg fill="none" height="20" viewBox="0 0 20 20" width="20">
+						<path class="fill" d="M0.765947 2.0125C3.30472 5.25 7.99265 11.25 7.99265 11.25V18.75C7.99265 19.4375 8.55822 20 9.24947 20H11.7631C12.4544 20 13.0199 19.4375 13.0199 18.75V11.25C13.0199 11.25 17.6953 5.25 20.2341 2.0125C20.875 1.1875 20.2843 0 19.2412 0H1.75883C0.715675 0 0.12497 1.1875 0.765947 2.0125Z"/>
+					</svg>
+				</button>
+				<button class="content__right-button">
+					<svg fill="none" height="20" viewBox="0 0 20 20" width="20">
+						<path class="stroke" d="M10.75 0V9.45984M10.75 9.45984V20M10.75 9.45984H0.75M10.75 9.45984H20.75" stroke-width="2"/>
+					</svg>
+				</button>
+				<button class="content__right-button">
+					<svg fill="none" height="18" viewBox="0 0 20 18" width="20">
+						<path class="fill" d="M0 9C0 11.3869 0.903059 13.6761 2.51051 15.364C4.11797 17.0518 6.29814 18 8.57143 18C10.8476 18 13.0286 17.06 14.6667 15.4L13.2381 13.9C12.6385 14.5667 11.915 15.0971 11.1122 15.4583C10.3095 15.8196 9.44475 16.0039 8.57143 16C2.62857 16 -0.342857 8.46 3.85714 4.05C8.05714 -0.36 15.2381 2.77 15.2381 9H12.381L16.1905 13H16.2857L20 9H17.1429C17.1429 6.61305 16.2398 4.32387 14.6323 2.63604C13.0249 0.948211 10.8447 0 8.57143 0C6.29814 0 4.11797 0.948211 2.51051 2.63604C0.903059 4.32387 0 6.61305 0 9Z"/>
+					</svg>
+				</button>
+			</div>
 			<div class="content__right-charts">
 				<h3 class="content__right-title">Общая статистика по пользователям</h3>
 				<div class="content__right-row">
@@ -118,11 +121,6 @@
 				width: 100%;
 			}
 
-			&-table {
-				border-collapse: collapse;
-				width: 100%;
-			}
-
 			&-footer {
 				border-top: 1px solid $--background-primary;
 
@@ -146,19 +144,15 @@
 			gap: 40px;
 
 			&-button {
-				border-radius: 25px;
 				border: 1px dashed $--blue;
+				border-radius: 25px;
 
 				align-items: center;
 				display: flex;
 				justify-content: center;
-				gap: 10px;
 
-				font-size: 16px;
-				color: $--blue;
-
-				height: 60px;
-				width: 100%;
+				height: 40px;
+				width: 60px;
 
 				& .fill {
 					fill: $--blue;
@@ -190,15 +184,14 @@
 	@media(hover: hover) {
 		.content__right-button:hover {
 			background: $--blue;
-			color: $--white;
-
+			
 			& .fill {
-				fill: $--white;
-			}
+					fill: $--white;
+				}
 
-			& .stroke {
-				stroke: $--white;
-			}
+				& .stroke {
+					stroke: $--white;
+				}
 		}
 	}
 </style>
