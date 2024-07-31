@@ -126,6 +126,10 @@
 				font-size: 16px;
 
 				z-index: 1;
+
+				&:active {
+					transform: scale(0.95);
+				}
 			}
 		}
 

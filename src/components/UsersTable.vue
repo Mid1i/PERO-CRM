@@ -42,6 +42,7 @@
 			<span class="table__cell">{{ user.email }}</span>
 			<span class="table__cell">{{ onFormatPhone(user.phone) }}</span>
 			<span class="table__cell">{{ user.country }}</span>
+			<span class="table__cell">{{ user.role }}</span>
 			<span class="table__cell">{{ user.dateOfBirth }}</span>
 			<span class="table__cell">{{ user.dateOfRegistration }}</span>
 		</div>
@@ -61,7 +62,7 @@
 		&__row {
 			align-items: center;
 			display: grid;
-			grid-template-columns: 80px repeat(auto-fit, minmax(100px, 1fr));
+			grid-template-columns: 70px 1fr 1fr 1fr 80px 100px 1fr 1fr;
 			column-gap: 5px;
 
 			border-bottom: 1px solid $--background-primary;

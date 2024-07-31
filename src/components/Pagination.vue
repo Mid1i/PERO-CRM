@@ -113,6 +113,10 @@
 				color: $--background-primary;
 				pointer-events: none;
 			}
+
+			&:active {
+				transform: scale(0.95);
+			}
 		}
 
 		&__list {
@@ -140,6 +144,10 @@
 				&.active {
 					background: $--blue;
 					color: $--white;
+				}
+
+				&:active {
+					transform: scale(0.95);
 				}
 			}
 		}

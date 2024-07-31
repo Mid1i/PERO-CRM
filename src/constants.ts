@@ -135,15 +135,17 @@ export const USERS_COLORS: IChartColors = {
 	pointBackgroundColor: "#41F1B6"
 }
 
-export const USERS_TABLE_HEADERS = ["Аватар", "Логин", "Почта", "Номер телефона", "Страна", "Дата рождения", "Дата регистрации"];
+export const USERS_TABLE_HEADERS = ["Аватар", "Логин", "Почта", "Номер телефона", "Страна", "Роль", "Дата рождения", "Дата регистрации"];
 
 export const USER: IUser = {
 	id: 1,
+	active: true,
 	avatar: "/src/assets/images/avatar.png",
 	login: "midi",
 	email: "testtest@mail.ru",
 	phone: 79626373903,
 	country: "Россия",
+	role: "Покупатель",
 	dateOfBirth: "30.08.2003",
 	dateOfRegistration: "26.07.2024"
 };
