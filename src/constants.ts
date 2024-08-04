@@ -2,7 +2,6 @@ import type { IRecentOrder } from "@/interfaces/IRecentOrder";
 import type { IChartColors } from "@/interfaces/IChartColors"
 import type { IAnalytics } from "@/interfaces/IAnalytics";
 import type { IWidget } from "@/interfaces/IWidget";
-import type { IUser } from "@/interfaces/IUser";
 
 
 export const WIDGETS: IWidget[] = [
@@ -135,19 +134,4 @@ export const USERS_COLORS: IChartColors = {
 	pointBackgroundColor: "#41F1B6"
 }
 
-export const USERS_TABLE_HEADERS = ["Аватар", "Логин", "Почта", "Номер телефона", "Страна", "Роль", "Дата рождения", "Дата регистрации"];
-
-export const USER: IUser = {
-	id: 1,
-	active: true,
-	avatar: "/src/assets/images/avatar.png",
-	login: "midi",
-	email: "testtest@mail.ru",
-	phone: 79626373903,
-	country: "Россия",
-	role: "Покупатель",
-	dateOfBirth: "30.08.2003",
-	dateOfRegistration: "26.07.2024"
-};
-
-export const USERS: IUser[] = new Array(45).fill(USER);
+export const USERS_TABLE_HEADERS = ["Аватар", "Логин", "Почта", "Номер телефона", "Роль", "Дата рождения", "Дата регистрации"];

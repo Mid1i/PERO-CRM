@@ -1,15 +1,17 @@
 <script setup lang="ts">
 	import { Ref, inject, ref, computed } from "vue";
+	import type { IUser } from "@/interfaces/IUser";
 	import type { TypeThemes } from "@/types/TypeThemes";
 	import UsersDoughnutChart from "@/components/UsersDoughnutChart.vue";
+	import UsersSearch from "@/components/UsersSearch.vue";
 	import UsersTable from "@/components/UsersTable.vue";
 	import Pagination from "@/components/Pagination.vue";
 	import WeekChart from "@/components/WeekChart.vue";
 	import { getLabelsForChart } from "@/helpers/charts";
 	import { chartConfig } from "@/plugins/chartConfig";
 	import { getWordByAmount } from "@/helpers/words";
+	import { USERS } from "@/users";
 	import {
-		USERS,
 		USERS_COLORS, 
 		WEEK_USERS, 
 	} from "@/constants";
@@ -19,6 +21,12 @@
 
 	const currentPage = ref<number>(1);
 
+	const isSearchVisible = ref<boolean>(false);
+
+
+	const switchSearchVisibility = (newStatus: boolean = false): boolean => isSearchVisible.value = newStatus;
+
+	const searchUser = (request: string): IUser[] => request ? USERS.filter(user => user.login.includes(request) || user.email.includes(request)) : [];
 
 	const getTableFooterString = computed<string>(() => {
 		const amount = USERS.length;
@@ -46,7 +54,7 @@
 		</div>
 		<aside class="content__right">
 			<div class="content__right-row">
-				<button class="content__right-button">
+				<button @click="() => switchSearchVisibility(true)" class="content__right-button">
 					<svg fill="none" height="20" viewBox="0 0 20 20" width="20">
 						<path class="fill" d="M14.2939 12.5786H13.3905L13.0703 12.2699C14.191 10.9663 14.8656 9.27387 14.8656 7.43282C14.8656 3.32762 11.538 0 7.43282 0C3.32762 0 0 3.32762 0 7.43282C0 11.538 3.32762 14.8656 7.43282 14.8656C9.27387 14.8656 10.9663 14.191 12.2699 13.0703L12.5786 13.3905V14.2939L18.2962 20L20 18.2962L14.2939 12.5786ZM7.43282 12.5786C4.58548 12.5786 2.28702 10.2802 2.28702 7.43282C2.28702 4.58548 4.58548 2.28702 7.43282 2.28702C10.2802 2.28702 12.5786 4.58548 12.5786 7.43282C12.5786 10.2802 10.2802 12.5786 7.43282 12.5786Z"/>
 					</svg>
@@ -98,6 +106,12 @@
 			/>
 		</aside>
 	</main>
+
+	<UsersSearch 
+		@close-popup="switchSearchVisibility"
+		:search-user="searchUser"
+		:is-visible="isSearchVisible"
+	/>
 </template>
 
 <style scoped lang="scss">

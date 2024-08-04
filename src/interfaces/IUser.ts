@@ -1,11 +1,12 @@
 export interface IUser {
 	id: number,
-	active: boolean,
+	isActive: boolean,
 	avatar: string,
 	login: string,
 	email: string,
-	phone: number,
-	country: "Россия" | "Белоруссия" | "Другая",
+	gender: boolean,
+	phone: string,
+	country: "Россия" | "Белоруссия" | "Грузия" | "Армения" | "Казахстан" | "Другая",
 	role: "Покупатель" | "Администратор" | "Менеджер" | "Заблокирован",
 	dateOfBirth: string,
 	dateOfRegistration: string
