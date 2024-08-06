@@ -4,6 +4,7 @@
 
 	--text-primary: #363949;
 	--text-secondary: #677483;
+	--text-tertiary: #97AAB4;
 
 	--box-shadow: rgb(132, 139, 200, .18);
 }
@@ -14,6 +15,7 @@
 
 	--text-primary: #EDEFFD;
 	--text-secondary: #A3BDCC;
+	--text-tertiary: #727f87;
 
 	--box-shadow: rgb(0, 0, 0, .4);
 }
@@ -32,5 +34,6 @@ $--background-secondary: var(--background-secondary);
 
 $--text-primary: var(--text-primary);
 $--text-secondary: var(--text-secondary);
+$--text-tertiary: var(--text-tertiary);
 
 $--box-shadow: var(--box-shadow);

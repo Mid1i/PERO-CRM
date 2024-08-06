@@ -1,3 +1,7 @@
+import type { TypeUserCountries } from "@/types/TypeUserCountries";
+import type { TypeUserRoles } from "@/types/TypeUserRoles";
+
+
 export interface IUser {
 	id: number,
 	isActive: boolean,
@@ -6,8 +10,8 @@ export interface IUser {
 	email: string,
 	gender: boolean,
 	phone: string,
-	country: "Россия" | "Белоруссия" | "Грузия" | "Армения" | "Казахстан" | "Другая",
-	role: "Покупатель" | "Администратор" | "Менеджер" | "Заблокирован",
+	country: TypeUserCountries,
+	role: TypeUserRoles,
 	dateOfBirth: string,
 	dateOfRegistration: string
 }

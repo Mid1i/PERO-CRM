@@ -8,3 +8,5 @@ export const getWordByAmount = (amount: number, one: string, two: string, five: 
 
 	return `${amount} ${five}`;
 }
+
+export const addLeadingZeros = (num: number): string => num.toString().padStart(2, "0");

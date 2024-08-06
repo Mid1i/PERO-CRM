@@ -113,7 +113,6 @@
 	@media(hover: hover) {
 		.table__row:hover {
 			color: $--text-primary;
-			font-weight: 500;
 		}
 	}
 </style>

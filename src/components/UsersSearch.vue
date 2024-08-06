@@ -29,13 +29,18 @@
 
 	const onSearchUser = (): IUser[] => results.value = props.searchUser(searchRequest.value);
 
+	const onHighlightMatch = (text: string): string => {
+		const regex = new RegExp(searchRequest.value, "i");
+		return text.replace(regex, match => `<span class="highlight">${match}</span>`);
+	}
+
 
 	const getSearchAmount = computed<string>(() => {
 		const length = results.value.length;
 		return `Найден${length % 10 !== 1 ? 'о' : ''} ${getWordByAmount(length, 'результат', 'результата', 'результатов')}`;
 	});
 
-	watch(searchRequest, <() => void>debounce(onSearchUser));
+	watch(searchRequest, debounce(<() => IUser[]>onSearchUser));
 </script>
 
 
@@ -57,6 +62,7 @@
 							'content__field-input',
 							searchRequest && 'active'
 						]"
+						autocomplete="off"
 						id="search"
 						type="text"
 					>
@@ -84,9 +90,9 @@
 									class="content__list-image"
 								>
 							</div>
-							<h6 class="content__list-title">{{ user.login }}</h6>
+							<h6 class="content__list-title" v-html="onHighlightMatch(user.login)"></h6>
 							<span class="content__list-text date">На сайте с <b>{{ user.dateOfRegistration }}</b></span>
-							<span class="content__list-text email">{{ user.email }}</span>
+							<span class="content__list-text email" v-html="onHighlightMatch(user.email)"></span>
 							<span class="content__list-text phone">{{ onFormatPhone(user.phone) }}</span>
 							<span class="content__list-text country">{{ user.country }}</span>
 						</li>
@@ -168,6 +174,7 @@
 			flex-direction: column;
 
 			margin-top: 5px;
+			padding-bottom: 50px;
 			overflow-y: auto;
 			height: 0px;
 
@@ -205,6 +212,11 @@
 
 				&:not(:last-child) {
 					border-bottom: 1px solid $--background-secondary;
+				}
+
+				&:deep(.highlight) {
+					color: $--blue;
+					text-decoration: underline;
 				}
 			}
 

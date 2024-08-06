@@ -25,6 +25,7 @@
 
 	const currentPage = ref<number>(1);
 	const currentSorting = ref<TypeSorting | null>(null);
+	const currentFilters = ref<string[]>([]);
 
 	const { isActivePopup: isActiveSearch, togglePopup: toggleSearchPopup } = usePopup();
 	const { isActivePopup: isActiveSorting, togglePopup: toggleSortingPopup } = usePopup();
@@ -33,7 +34,7 @@
 
 	const switchSorting = (value: TypeSorting): TypeSorting | null => currentSorting.value = currentSorting.value === value ? null : value;
 
-	const searchUser = (request: string): IUser[] => request ? USERS.filter(user => user.login.includes(request) || user.email.includes(request)) : [];
+	const searchUser = (request: string): IUser[] => request ? USERS.filter(user => user.login.toLowerCase().includes(request) || user.email.toLowerCase().includes(request)) : [];
 
 
 	const getTableFooterString = computed<string>(() => {
@@ -130,6 +131,7 @@
 
 	<UsersFilters
 		@close-popup="toggleFiltersPopup"
+		:current-filters="currentFilters"
 		:is-visible="isActiveFilters"
 	/>
 </template>

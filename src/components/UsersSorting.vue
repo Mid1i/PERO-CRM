@@ -1,5 +1,6 @@
 <script setup lang="ts">
 	import type { TypeSorting } from "@/types/TypeSorting";
+	import BaseCheckbox from "@/components/BaseCheckbox.vue";
 	import TheBlackout from "@/layouts/TheBlackout.vue";
 	import ThePopup from "@/layouts/ThePopup.vue";
 	import { SORTING_ITEMS } from "@/constants";
@@ -34,13 +35,11 @@
 						:key="value"
 						class="content__list-el"
 					>
-						<input 
+						<BaseCheckbox
 							@click="$emit('switchSorting', value)"
-							:checked="value === currentSorting"
+							:isActive="value === currentSorting"
 							:id="value"
-							class="content__list-input"
-							type="checkbox"
-						>
+						/>
 						<label :for="value" class="content__list-label">
 							<div class="content__list-icon" v-html="icon"></div>
 							{{ title }}
@@ -72,30 +71,6 @@
 				gap: 20px;
 			}
 
-			&-input {
-				appearance: none;
-				cursor: pointer;
-
-				background: $--background-secondary;
-				box-shadow: 0px 32px 48px 0px $--box-shadow;
-				border: 1px solid transparent;
-				border-radius: 5px;
-
-				position: relative;
-				height: 20px;
-				width: 20px;
-
-				&:checked::before {
-					content: "✔";
-
-					position: absolute;
-					left: 50%;
-					top: 50%;
-
-					transform: translate(-50%, -55%);
-				}
-			}
-
 			&-icon:deep(path) {
 				fill: $--text-primary;
 			}
@@ -113,7 +88,7 @@
 
 
 	@media(hover: hover) {
-		.content__list-el:hover .content__list-input {
+		.content__list-el:hover .checkbox {
 			border-color: $--text-secondary;
 		}
 	}

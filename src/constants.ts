@@ -1,3 +1,6 @@
+import type { TypeUserCountries } from "@/types/TypeUserCountries";
+import type { TypeUserRoles } from "@/types/TypeUserRoles";
+import type { TypeWeekDays } from '@/types/TypeWeekDays';
 import type { IRecentOrder } from "@/interfaces/IRecentOrder";
 import type { IChartColors } from "@/interfaces/IChartColors"
 import type { IAnalytics } from "@/interfaces/IAnalytics";
@@ -193,3 +196,11 @@ export const SORTING_ITEMS: ISorting[] = [
 		value: "dateOfRegistration,desc"
 	}
 ];
+
+export const CALENDAR_HEADERS: TypeWeekDays[] = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
+
+export const COUNTRIES_FILTERS: TypeUserCountries[] = ["Россия", "Армения", "Белоруссия", "Грузия", "Казахстан", "Другая"]; 
+
+export const ROLES_FILTERS: TypeUserRoles[] = ["Администратор", "Заблокирован", "Менеджер", "Покупатель"];
+
+export const ACTIVITY_FILTERS: string[] = ["Активный", "Неактивный"];
