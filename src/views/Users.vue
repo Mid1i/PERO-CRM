@@ -1,9 +1,9 @@
 <script setup lang="ts">
-	import { Ref, inject, ref, computed } from "vue";
+	import { ref, computed } from "vue";
 	import type { IUser } from "@/interfaces/IUser";
-	import type { TypeThemes } from "@/types/TypeThemes";
 	import type { TypeSorting } from "@/types/TypeSorting";
 	import UsersStatistics from "@/components/UsersStatistics.vue";
+	import UsersFilters from "@/components/UsersFilters.vue";
 	import UsersSorting from "@/components/UsersSorting.vue";
 	import UsersSearch from "@/components/UsersSearch.vue";
 	import UsersTable from "@/components/UsersTable.vue";
@@ -12,6 +12,8 @@
 	import { getLabelsForChart } from "@/helpers/charts";
 	import { chartConfig } from "@/plugins/chartConfig";
 	import { getWordByAmount } from "@/helpers/words";
+	import { usePopup } from "@/composables/popup";
+	import { useTheme } from "@/composables/theme";
 	import { USERS } from "@/users";
 	import {
 		USERS_COLORS, 
@@ -19,18 +21,14 @@
 	} from "@/constants";
 
 
-	const theme = <Ref<TypeThemes>>inject("theme");
+	const { theme } = useTheme();
 
 	const currentPage = ref<number>(1);
 	const currentSorting = ref<TypeSorting | null>(null);
 
-	const isActiveSearch = ref<boolean>(false);
-	const isActiveSorting = ref<boolean>(false);
-
-
-	const toggleSearchPopup = (): boolean => isActiveSearch.value = !isActiveSearch.value;
-
-	const toggleSortingPopup = (): boolean => isActiveSorting.value = !isActiveSorting.value;
+	const { isActivePopup: isActiveSearch, togglePopup: toggleSearchPopup } = usePopup();
+	const { isActivePopup: isActiveSorting, togglePopup: toggleSortingPopup } = usePopup();
+	const { isActivePopup: isActiveFilters, togglePopup: toggleFiltersPopup } = usePopup();
 
 
 	const switchSorting = (value: TypeSorting): TypeSorting | null => currentSorting.value = currentSorting.value === value ? null : value;
@@ -74,7 +72,7 @@
 						<path class="fill" d="M0.25 14H6.91667V11.6667H0.25V14ZM0.25 0V2.33333H20.25V0H0.25ZM0.25 8.16667H13.5833V5.83333H0.25V8.16667Z"/>
 					</svg>
 				</button>
-				<button class="content__right-button">
+				<button @click="toggleFiltersPopup" class="content__right-button">
 					<svg fill="none" height="20" viewBox="0 0 20 20" width="20">
 						<path class="fill" d="M0.765947 2.0125C3.30472 5.25 7.99265 11.25 7.99265 11.25V18.75C7.99265 19.4375 8.55822 20 9.24947 20H11.7631C12.4544 20 13.0199 19.4375 13.0199 18.75V11.25C13.0199 11.25 17.6953 5.25 20.2341 2.0125C20.875 1.1875 20.2843 0 19.2412 0H1.75883C0.715675 0 0.12497 1.1875 0.765947 2.0125Z"/>
 					</svg>
@@ -128,6 +126,11 @@
 		@switch-sorting="switchSorting"
 		:is-visible="isActiveSorting"
 		:current-sorting="currentSorting"
+	/>
+
+	<UsersFilters
+		@close-popup="toggleFiltersPopup"
+		:is-visible="isActiveFilters"
 	/>
 </template>
 

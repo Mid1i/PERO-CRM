@@ -21,6 +21,7 @@
 	const searchRequest = ref<string>("");
 	const results = ref<IUser[]>([]);
 
+	
 	const onClosePopup = (): void => {
 		window.setTimeout(() => searchRequest.value = "", 300);
 		emits("closePopup");

@@ -1,8 +1,8 @@
 <script setup lang="ts">
-	import { Ref, ref, inject, onMounted, onUnmounted } from "vue";
+	import { ref, onMounted, onUnmounted } from "vue";
 	import { Chart } from "chart.js/auto";
-	import type { TypeThemes } from "@/types/TypeThemes";
 	import { chartConfig } from "@/plugins/doughnutChartConfig";
+	import { useTheme } from "@/composables/theme";
 
 
 	const props = defineProps<{
@@ -11,7 +11,8 @@
 		labels: string[]
 	}>();
 
-	const theme = <Ref<TypeThemes>>inject("theme");
+	
+	const { theme } = useTheme();
 	const canvasRef = ref<HTMLCanvasElement | null>(null);
 
 	let chart: Chart | null = null;

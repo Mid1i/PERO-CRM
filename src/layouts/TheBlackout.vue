@@ -8,7 +8,7 @@
 	}>();
 
 
-	const onClickBlackout = (event: MouseEvent) => {
+	const onClickBlackout = (event: MouseEvent): void => {
 		const target = <HTMLElement>event.target;
 
 		target.classList.contains("blackout") && emits("closePopup");

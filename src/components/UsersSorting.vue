@@ -10,7 +10,7 @@
 		isVisible: boolean
 	}>();
 
-	const emits = defineEmits<{
+	defineEmits<{
 		(e: "closePopup"): boolean,
 		(e: "switchSorting", value: TypeSorting): TypeSorting
 	}>();

@@ -1,7 +1,7 @@
 <script setup lang="ts">
+  import { RouterView } from "vue-router";
 	import { ref, onBeforeMount, provide } from "vue";
 	import type { TypeThemes } from "@/types/TypeThemes";
-  import { RouterView } from "vue-router";
 	import Container from "@/layouts/TheContainer.vue";
 
 

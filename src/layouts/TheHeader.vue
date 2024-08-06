@@ -1,13 +1,11 @@
 <script setup lang="ts">
-	import { Ref, inject } from "vue";
-	import type { TypeThemes } from "@/types/TypeThemes";
+	import { useTheme } from "@/composables/theme";
 	import { useRoute } from "vue-router";
 
 
 	const router = useRoute();
 
-	const theme = <Ref<TypeThemes>>inject("theme");
-	const switchTheme = <(currentTheme: TypeThemes) => void>inject("switchTheme");
+	const { theme, switchTheme } = useTheme();
 </script>
 
 

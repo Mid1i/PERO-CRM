@@ -128,7 +128,7 @@
 			link: "/bar-chart",
 			title: "Bar Chart"
 		}
-	]
+	];
 </script>
 
 

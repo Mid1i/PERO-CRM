@@ -1,14 +1,14 @@
 <script setup lang="ts">
-	import { Ref, ref, onMounted, inject, watch } from "vue";
-	import type { TypeThemes } from "@/types/TypeThemes";
+	import { ref, onMounted, watch } from "vue";
 	import type { IWidget } from "@/interfaces/IWidget";
 	import { onFormatPrice } from "@/helpers/formatters";
+	import { useTheme } from "@/composables/theme";
 
 
 	const props = defineProps<IWidget>();
 
 	const canvasRef = ref<HTMLCanvasElement>();
-	const theme = <Ref<TypeThemes>>inject("theme");
+	const { theme } = useTheme();
 
 	
 	const drawProgressCircle = (): void => {

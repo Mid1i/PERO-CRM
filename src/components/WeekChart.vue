@@ -1,8 +1,8 @@
 <script setup lang="ts">
-	import { Ref, ref, onMounted, onUnmounted, inject, watch } from "vue";
+	import { ref, onMounted, onUnmounted, watch } from "vue";
 	import { Chart, ChartConfiguration, Plugin } from "chart.js/auto";
-	import type { TypeThemes } from "@/types/TypeThemes";
 	import { onDrawDatasets } from "@/plugins/chartDatasetDraw";
+	import { useTheme } from "@/composables/theme";
 
 
 	const props = defineProps<{
@@ -11,7 +11,7 @@
 	}>();
 	
 
-	const theme = <Ref<TypeThemes>>inject("theme");
+	const { theme } = useTheme();
 	const canvasRef = ref<HTMLCanvasElement | null>(null);
 
 	let chart: Chart | null = null;
