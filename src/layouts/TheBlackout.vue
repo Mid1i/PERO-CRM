@@ -2,11 +2,23 @@
 	defineProps<{
 		isVisible: boolean
 	}>();
+
+	const emits = defineEmits<{
+		(e: "closePopup"): boolean
+	}>();
+
+
+	const onClickBlackout = (event: MouseEvent) => {
+		const target = <HTMLElement>event.target;
+
+		target.classList.contains("blackout") && emits("closePopup");
+	}
 </script>
 
 
 <template>
 	<div
+		@click="onClickBlackout"
 		:class="[
 			'blackout',
 			isVisible && 'active'

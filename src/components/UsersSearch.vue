@@ -14,19 +14,12 @@
 	}>();
 
 	const emits = defineEmits<{
-		(e: "closePopup", newStatus?: boolean): boolean
+		(e: "closePopup"): boolean
 	}>();
 
 
 	const searchRequest = ref<string>("");
 	const results = ref<IUser[]>([]);
-
-
-	const onClickBlackout = (event: MouseEvent): void => {
-		const target = <HTMLElement>event.target;
-
-		target.classList.contains("blackout") && onClosePopup();
-	}
 
 	const onClosePopup = (): void => {
 		window.setTimeout(() => searchRequest.value = "", 300);
@@ -47,7 +40,7 @@
 
 <template>
 	<TheBlackout 
-		@click="onClickBlackout"
+		@close-popup="onClosePopup"
 		:is-visible="isVisible"
 	>
 		<ThePopup
