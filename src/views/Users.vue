@@ -2,7 +2,9 @@
 	import { Ref, inject, ref, computed } from "vue";
 	import type { IUser } from "@/interfaces/IUser";
 	import type { TypeThemes } from "@/types/TypeThemes";
+	import type { TypeSorting } from "@/types/TypeSorting";
 	import UsersStatistics from "@/components/UsersStatistics.vue";
+	import UsersSorting from "@/components/UsersSorting.vue";
 	import UsersSearch from "@/components/UsersSearch.vue";
 	import UsersTable from "@/components/UsersTable.vue";
 	import Pagination from "@/components/Pagination.vue";
@@ -20,13 +22,21 @@
 	const theme = <Ref<TypeThemes>>inject("theme");
 
 	const currentPage = ref<number>(1);
+	const currentSorting = ref<TypeSorting | null>(null);
 
-	const isSearchVisible = ref<boolean>(false);
+	const isActiveSearch = ref<boolean>(false);
+	const isActiveSorting = ref<boolean>(false);
 
 
-	const switchSearchVisibility = (newStatus: boolean = false): boolean => isSearchVisible.value = newStatus;
+	const toggleSearchPopup = (): boolean => isActiveSearch.value = !isActiveSearch.value;
+
+	const toggleSortingPopup = (): boolean => isActiveSorting.value = !isActiveSorting.value;
+
+
+	const switchSorting = (value: TypeSorting): TypeSorting | null => currentSorting.value = currentSorting.value === value ? null : value;
 
 	const searchUser = (request: string): IUser[] => request ? USERS.filter(user => user.login.includes(request) || user.email.includes(request)) : [];
+
 
 	const getTableFooterString = computed<string>(() => {
 		const amount = USERS.length;
@@ -54,12 +64,12 @@
 		</div>
 		<aside class="content__right">
 			<div class="content__right-row">
-				<button @click="() => switchSearchVisibility(true)" class="content__right-button">
+				<button @click="toggleSearchPopup" class="content__right-button">
 					<svg fill="none" height="20" viewBox="0 0 20 20" width="20">
 						<path class="fill" d="M14.2939 12.5786H13.3905L13.0703 12.2699C14.191 10.9663 14.8656 9.27387 14.8656 7.43282C14.8656 3.32762 11.538 0 7.43282 0C3.32762 0 0 3.32762 0 7.43282C0 11.538 3.32762 14.8656 7.43282 14.8656C9.27387 14.8656 10.9663 14.191 12.2699 13.0703L12.5786 13.3905V14.2939L18.2962 20L20 18.2962L14.2939 12.5786ZM7.43282 12.5786C4.58548 12.5786 2.28702 10.2802 2.28702 7.43282C2.28702 4.58548 4.58548 2.28702 7.43282 2.28702C10.2802 2.28702 12.5786 4.58548 12.5786 7.43282C12.5786 10.2802 10.2802 12.5786 7.43282 12.5786Z"/>
 					</svg>
 				</button>
-				<button class="content__right-button">
+				<button @click="toggleSortingPopup" class="content__right-button">
 					<svg fill="none" height="14" viewBox="0 0 21 14" width="21">
 						<path class="fill" d="M0.25 14H6.91667V11.6667H0.25V14ZM0.25 0V2.33333H20.25V0H0.25ZM0.25 8.16667H13.5833V5.83333H0.25V8.16667Z"/>
 					</svg>
@@ -108,9 +118,16 @@
 	</main>
 
 	<UsersSearch 
-		@close-popup="switchSearchVisibility"
+		@close-popup="toggleSearchPopup"
 		:search-user="searchUser"
-		:is-visible="isSearchVisible"
+		:is-visible="isActiveSearch"
+	/>
+
+	<UsersSorting
+		@close-popup="toggleSortingPopup"
+		@switch-sorting="switchSorting"
+		:is-visible="isActiveSorting"
+		:current-sorting="currentSorting"
 	/>
 </template>
 

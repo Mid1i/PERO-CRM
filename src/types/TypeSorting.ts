@@ -1,0 +1,1 @@
+export type TypeSorting = "login,asc" | "login,desc" | "dateOfBirth,asc" | "dateOfBirth,desc" | "dateOfRegistration,asc" | "dateOfRegistration,desc";
