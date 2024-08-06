@@ -2,7 +2,7 @@
 	import { Ref, inject, ref, computed } from "vue";
 	import type { IUser } from "@/interfaces/IUser";
 	import type { TypeThemes } from "@/types/TypeThemes";
-	import UsersDoughnutChart from "@/components/UsersDoughnutChart.vue";
+	import UsersStatistics from "@/components/UsersStatistics.vue";
 	import UsersSearch from "@/components/UsersSearch.vue";
 	import UsersTable from "@/components/UsersTable.vue";
 	import Pagination from "@/components/Pagination.vue";
@@ -83,17 +83,17 @@
 			<div class="content__right-charts">
 				<h3 class="content__right-title">Общая статистика по пользователям</h3>
 				<div class="content__right-row">
-					<UsersDoughnutChart
+					<UsersStatistics
 						:data="[55, 45]"
 						:colors="['rgb(115, 128, 236)', 'rgb(255, 119, 130)']"
 						:labels="['Мужчины', 'Женщины']"
 					/>
-					<UsersDoughnutChart
+					<UsersStatistics
 						:data="[60, 15, 25]"
 						:colors="['rgb(115, 128, 236)', 'rgb(65, 241, 182)', 'rgb(255, 187, 85)']"
 						:labels="['Россия', 'Белоруссия', 'Другие']"
 					/>
-					<UsersDoughnutChart
+					<UsersStatistics
 						:data="[40, 40, 20]"
 						:colors="['rgb(65, 241, 182)', 'rgb(255, 187, 85)', 'rgb(255, 119, 130)']"
 						:labels="['18-30 лет', '30-60 лет', '60+ лет']"
