@@ -1,6 +1,6 @@
 <script setup lang="ts">
 	defineProps<{
-		isActive: boolean
+		isActive?: boolean
 		id: string
 	}>();
 </script>

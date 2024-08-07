@@ -17,15 +17,15 @@
 
 <template>
 	<section class="table">
-		<div class="table__row">
+		<header class="table__header">
 			<h3 
 				v-for="header in USERS_TABLE_HEADERS"
 				:key="header"
-				class="table__header"
+				class="table__cell header"
 			>
 				{{ header }}
 			</h3>
-		</div>
+		</header>
 		<div
 			v-for="user in getCurrentPageUsers" 
 			:key="user.id"
@@ -56,36 +56,27 @@
 
 	.table {
 		display: flex;
+		flex: 1 0 auto;
 		flex-direction: column;
 
-		&__row {
+		&__row,
+		&__header {
 			align-items: center;
 			column-gap: 5px;
 			display: grid;
 			grid-template-columns: 70px repeat(6, 1fr);
+		}
 
+		&__row {
 			border-bottom: 1px solid $--background-primary;
 			color: $--text-secondary;
 			font-weight: 400;
 
-			&:not(:first-child) {
-				cursor: pointer;
-				padding: 10px 0px;
-			}
+			cursor: pointer;
+			padding: 10px 0px;
 
-			&:first-child,
 			&:last-child {
 				border-bottom: 1px solid transparent;
-			}
-		}
-
-		&__header {
-			@include h3;
-			text-align: left;
-			white-space: nowrap;
-
-			&:last-child {
-				text-align: right;
 			}
 		}
 
@@ -97,6 +88,12 @@
 
 			text-overflow: ellipsis;
 			overflow: hidden;
+
+			&.header {
+				@include h3;
+				text-align: left;
+				white-space: nowrap;
+			}
 
 			&:last-child {
 				text-align: right;

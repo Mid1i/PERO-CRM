@@ -1,7 +1,9 @@
 <script setup lang="ts">
-	import { ref, computed } from "vue";
+	import { ref, computed, watch, provide } from "vue";
 	import type { IUser } from "@/interfaces/IUser";
+	import type { IFilters } from "@/interfaces/IFilters";
 	import type { TypeSorting } from "@/types/TypeSorting";
+	import type { TypeUserFilters, TypeUserFiltersDates, TypeUserFiltersValues } from "@/types/TypeUserFilters";
 	import UsersStatistics from "@/components/UsersStatistics.vue";
 	import UsersFilters from "@/components/UsersFilters.vue";
 	import UsersSorting from "@/components/UsersSorting.vue";
@@ -19,13 +21,20 @@
 		USERS_COLORS, 
 		WEEK_USERS, 
 	} from "@/constants";
+	import { IDate } from "@/interfaces/IDate"
 
 
 	const { theme } = useTheme();
 
 	const currentPage = ref<number>(1);
 	const currentSorting = ref<TypeSorting | null>(null);
-	const currentFilters = ref<string[]>([]);
+	const currentFilters = ref<IFilters>({
+		isActive: null,
+		countries: [],
+		roles: [],
+		dateOfBirth: {},
+		dateOfRegistration: {}
+	});
 
 	const { isActivePopup: isActiveSearch, togglePopup: toggleSearchPopup } = usePopup();
 	const { isActivePopup: isActiveSorting, togglePopup: toggleSortingPopup } = usePopup();
@@ -37,10 +46,58 @@
 	const searchUser = (request: string): IUser[] => request ? USERS.filter(user => user.login.toLowerCase().includes(request) || user.email.toLowerCase().includes(request)) : [];
 
 
+	const isInFilters = (element: TypeUserFiltersValues, id: TypeUserFilters): boolean => {
+		const currentFilter = currentFilters.value?.[id];
+		
+		if (Array.isArray(currentFilter)) return !!currentFilter.find(value => value === element);
+		
+		return currentFilter === element;
+	}
+
+	const updateDateFilters = (element: IDate, id: TypeUserFiltersDates): void => {
+		currentFilters.value = {
+			...currentFilters.value,
+			[id]: {
+				...currentFilters.value?.[id],
+				...element
+			}
+		}
+	}
+
+	const updateFilters = (element: TypeUserFiltersValues, id: TypeUserFilters): void => {
+		const currentFilter = currentFilters.value?.[id];
+		
+		if (Array.isArray(currentFilter)) {
+		 	currentFilters.value =  {
+				...currentFilters.value, 
+				[id]: isInFilters(element, id) ? [...currentFilter.filter(value => value !== element)] : [...currentFilter, element]
+			};
+
+			return;
+		}
+
+		if (element === "Активный"  || element === "Неактивный") {
+			currentFilters.value = {
+				...currentFilters.value, 
+				isActive: isInFilters(element, id) ? null : element
+			};
+
+			return;
+		}
+	}
+
+	provide("updateDateFilters", updateDateFilters);
+	provide("updateFilters", updateFilters);
+	provide("isInFilters", isInFilters)
+
+
 	const getTableFooterString = computed<string>(() => {
 		const amount = USERS.length;
 		return `${currentPage.value} страница из ${Math.ceil(amount / 11)} (${getWordByAmount(amount, "пользователь", "пользователя", "пользователей")})`;
 	});
+
+
+	watch(currentFilters, () => console.log(currentFilters.value))
 </script>
 
 <template>
@@ -131,7 +188,6 @@
 
 	<UsersFilters
 		@close-popup="toggleFiltersPopup"
-		:current-filters="currentFilters"
 		:is-visible="isActiveFilters"
 	/>
 </template>
@@ -153,6 +209,7 @@
 			height: 100%;
 
 			&-wrapper {
+				display: flex;
 				flex: 1 0 auto;
 				width: 100%;
 			}

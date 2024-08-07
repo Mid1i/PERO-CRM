@@ -1,16 +1,16 @@
 <script setup lang="ts">
 	import { Ref, inject } from "vue";
-	import type { TypePopups } from "@/types/TypePopups";
+	import type { TypeUserFiltersDates } from "@/types/TypeUserFilters";
 	import BaseDateInput from "@/components/BaseDateInput.vue";
 
 
 	defineProps<{
-		id: TypePopups[],
+		id: TypeUserFiltersDates,
 		title: string
 	}>();
 
 
-	const currentPopup = <Ref<TypePopups>>inject("currentPopup");
+	const currentPopup = <Ref<string | null>>inject("currentPopup");
 </script>
 
 
@@ -21,15 +21,17 @@
 			<div class="filter__row-field">
 				<span class="filter__row-text">С</span>
 				<BaseDateInput
-					:is-active="currentPopup === id[0]"
-					:id="id[0]"
+					:is-active="currentPopup === `${id},from`"
+					:id="id"
+					step="from"
 				/>
 			</div>
 			<div class="filter__row-field">
 				<span class="filter__row-text">По</span>
 				<BaseDateInput
-					:is-active="currentPopup === id[1]"
-					:id="id[1]"
+					:is-active="currentPopup === `${id},to`"
+					:id="id"
+					step="to"
 				/>
 			</div>
 		</div>

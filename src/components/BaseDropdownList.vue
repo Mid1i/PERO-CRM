@@ -1,16 +1,26 @@
 <script setup lang="ts">
-	import { ref } from "vue";
+	import { ref, inject } from "vue";
+	import type { TypeUserFilters, TypeUserFiltersValues } from "@/types/TypeUserFilters";
+	import type { TypeUserCountries } from "@/types/TypeUserCountries";
+	import type { TypeUserRoles } from "@/types/TypeUserRoles";
+	import type { TypeActivity } from "@/types/TypeActivity";
 	import BaseCheckbox from "@/components/BaseCheckbox.vue";
 
 
+	type TypeElement = TypeUserCountries | TypeUserRoles | TypeActivity;
+
+
 	defineProps<{
+		id: TypeUserFilters,
 		title: string,
-		currentFilters: string[],
-		elements: string[]
+		elements: TypeElement[]
 	}>();
 
 
 	const isActiveList = ref<boolean>(false);
+
+	const updateFilters = inject<(el: TypeUserFiltersValues, id: TypeUserFilters) => void>("updateFilters");
+	const isInFilters = inject<(el: TypeUserFiltersValues, id: TypeUserFilters) => boolean>("isInFilters");
 
 
 	const onToggleList = (): boolean => isActiveList.value = !isActiveList.value;
@@ -32,8 +42,9 @@
 				:key="element"
 				class="dropdown__list-el"
 			>
-				<BaseCheckbox
-					:isActive="currentFilters.includes(element)"
+				<BaseCheckbox 
+					:is-active="isInFilters && isInFilters(element, id)"
+					@click="() => updateFilters && updateFilters(element, id)" 
 					:id="element"
 				/>
 				<label 

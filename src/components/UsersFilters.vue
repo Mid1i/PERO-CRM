@@ -1,6 +1,5 @@
 <script setup lang="ts">
 	import { ref, provide } from "vue";
-	import type { TypePopups } from "@/types/TypePopups";
 	import BaseDropdownList from "@/components/BaseDropdownList.vue";
 	import UsersFiltersDate from "@/components/UsersFiltersDate.vue";
 	import TheBlackout from "@/layouts/TheBlackout.vue";
@@ -13,7 +12,6 @@
 
 
 	defineProps<{
-		currentFilters: string[],
 		isVisible: boolean
 	}>();
 
@@ -21,10 +19,16 @@
 		(e: "closePopup"): boolean
 	}>();
 
-	const currentPopup = ref<TypePopups>(null);
+
+	const currentPopup = ref<string | null>(null);
 
 
-	const switchCurrentPopup = (id: TypePopups): TypePopups => currentPopup.value = currentPopup.value === id ? null : id;
+	const switchCurrentPopup = (id: string | null): string | null => currentPopup.value = currentPopup.value === id ? null : id;
+
+	const onClosePopup = () => {
+		switchCurrentPopup(null);
+		emits("closePopup");
+	};
 
 	provide("currentPopup", currentPopup);
 	provide("switchCurrentPopup", switchCurrentPopup);
@@ -32,37 +36,37 @@
 
 
 <template>
-	<TheBlackout 
-		@close-popup="$emit('closePopup')"
+	<TheBlackout
+		@close-popup="onClosePopup"
 		:is-visible="isVisible"
 	>
 		<ThePopup
-			@close-popup="$emit('closePopup')"
+			@close-popup="onClosePopup"
 			:is-visible="isVisible"	
 			title="Фильтры по пользователям"
 		>
 			<main class="content">
 				<BaseDropdownList
-					:current-filters="currentFilters"
 					:elements="COUNTRIES_FILTERS"
+					id="countries"
 					title="Страна"
 				/>
 				<UsersFiltersDate
-					:id="['dateOfBirth,from', 'dateOfBirth,to']"
+					id="dateOfBirth"
 					title="Дата рождения"
 				/>
 				<UsersFiltersDate
-					:id="['dateOfRegistration,from', 'dateOfRegistration,to']"
+					id="dateOfRegistration"
 					title="Дата регистрации"
 				/>
 				<BaseDropdownList
-					:current-filters="currentFilters"
 					:elements="ROLES_FILTERS"
+					id="roles"
 					title="Роль пользователя"
 				/>
 				<BaseDropdownList
-					:current-filters="currentFilters"
 					:elements="ACTIVITY_FILTERS"
+					id="isActive"
 					title="Активность пользователя"
 				/>
 			</main>

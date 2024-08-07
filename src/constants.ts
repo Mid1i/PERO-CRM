@@ -1,5 +1,6 @@
 import type { TypeUserCountries } from "@/types/TypeUserCountries";
 import type { TypeUserRoles } from "@/types/TypeUserRoles";
+import type { TypeActivity } from "@/types/TypeActivity";
 import type { TypeWeekDays } from '@/types/TypeWeekDays';
 import type { IRecentOrder } from "@/interfaces/IRecentOrder";
 import type { IChartColors } from "@/interfaces/IChartColors"
@@ -203,4 +204,4 @@ export const COUNTRIES_FILTERS: TypeUserCountries[] = ["Россия", "Арме
 
 export const ROLES_FILTERS: TypeUserRoles[] = ["Администратор", "Заблокирован", "Менеджер", "Покупатель"];
 
-export const ACTIVITY_FILTERS: string[] = ["Активный", "Неактивный"];
+export const ACTIVITY_FILTERS: TypeActivity[] = ["Активный", "Неактивный"];
