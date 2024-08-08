@@ -1,13 +1,12 @@
 <script setup lang="ts">
-	import { Ref, inject } from "vue";
 	import { RouterLink } from "vue-router";
-	import type { TypeThemes } from "@/types/TypeThemes";
 	import RecentOrder from "@/components/RecentOrder.vue";
 	import WeekChart from "@/components/WeekChart.vue";
 	import Analytics from "@/components/Analytics.vue";
 	import Widget from "@/components/Widget.vue";
 	import { chartConfig } from "@/plugins/chartConfig";
 	import { getLabelsForChart } from "@/helpers/charts";
+	import { useTheme } from "@/composables/UseTheme";
 	import { 
 		ANALYTICS, 
 		RECENT_ORDERS, 
@@ -19,7 +18,7 @@
 	} from "@/constants";
 
 
-	const theme = <Ref<TypeThemes>>inject("theme");
+	const { theme } = useTheme();
 </script>
 
 <template>

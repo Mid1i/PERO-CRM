@@ -11,7 +11,6 @@
 		(e: "switchPage", newPage: number): void
 	}>();
 
-
 	const getPages = computed<number[]>(() => {
 		if (props.pages < 4) return Array.from({ length: props.pages }, (_, index) => index + 1);
 		
@@ -48,11 +47,8 @@
 			<li 
 				v-for="page in getPages"
 				@click="$emit('switchPage', page)"
+				:class="['pagination__list-el', { active: currentPage === page }]"
 				:key="page"
-				:class="[
-					'pagination__list-el',
-					currentPage === page && 'active'
-				]"
 			>
 				{{ page }}
 			</li>

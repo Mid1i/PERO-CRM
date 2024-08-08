@@ -15,7 +15,6 @@
 		(e: "changeDate", date: Date): void
 	}>();
 
-
 	const calendarContent = ref<"calendar" | "months" | "years">("calendar");
 	const currentYearsPage = ref<number>(0);
 
@@ -23,9 +22,7 @@
 	const currentYear = ref<number>(currentDate.getFullYear());
 	const currentMonth = ref<number>(currentDate.getMonth());
 
-
 	const isSelected = (date: Date): boolean => props.inputDate?.getTime() === date.getTime();
-
 
 	const setYear = (year: number): void => {
 		calendarContent.value = "calendar";
@@ -47,12 +44,10 @@
 		}
 	}
 
-
 	const getMonthDates = computed<IDay[]>(() => {
 		let date = new Date(currentYear.value, currentMonth.value);
-		const monthDates: IDay[] = [];
-		
 		const firstDayOfMonth: number = getDay(date);
+		const monthDates: IDay[] = [];
 		
 		date.setDate(date.getDate() - firstDayOfMonth);
 
@@ -80,8 +75,8 @@
 
 
 <template>
-	<div :class="['calendar', {active: isActive}]">
-		<div :class="['calendar__main', {active: calendarContent === 'calendar' && isActive}]">
+	<div :class="['calendar', { active: isActive }]">
+		<div :class="['calendar__main', { active: calendarContent === 'calendar' && isActive }]">
 			<header class="calendar__header">
 				<div class="calendar__header-month">
 					<button @click="() => changeMonth(true)" class="calendar__header-icon">
@@ -121,31 +116,24 @@
 				<span
 					v-for="{ date, isMuted }, index) in getMonthDates"
 					@click="$emit('changeDate', date)"
+					:class="['calendar__body-item', { selected: isSelected(date) }, { muted: isMuted }]"
 					:key="index"
-					:class="[
-						'calendar__body-item',
-						{selected: isSelected(date)},
-						{muted: isMuted}
-					]"
 				>
 					{{ date.getDate() }}
 				</span>
 			</div>
 		</div>
-		<ul :class="['calendar__months', {active: calendarContent === 'months' && isActive}]">
+		<ul :class="['calendar__months', { active: calendarContent === 'months' && isActive }]">
 			<li 
 				v-for="month of 12"
 				@click="() => setMonth(month - 1)"
-				:class="[
-					'calendar__months-el',
-					{selected: currentMonth === month - 1}
-				]"
+				:class="['calendar__months-el', { selected: currentMonth === month - 1 }]"
 				:key="month"
 			>
 				{{ onFormatMonth(month - 1) }}
 			</li>
 		</ul>
-		<div :class="['calendar__years', {active: calendarContent === 'years' && isActive}]">
+		<div :class="['calendar__years', { active: calendarContent === 'years' && isActive }]">
 			<button @click="() => currentYearsPage -= 1" class="calendar__years-button">
 				<svg fill="none" height="14" viewBox="0 0 8 14" width="8">
 					<path d="M8 1.645L3.05533 7L8 12.355L6.47773 14L3.71833e-08 7L6.47773 0L8 1.645Z" fill="#EDEFFD"/>
@@ -155,10 +143,7 @@
 				<li 
 					v-for="year in getYears"
 					@click="() => setYear(year)"
-					:class="[
-						'calendar__years-el',
-						{selected: currentYear === year}
-					]"
+					:class="['calendar__years-el', { selected: currentYear === year }]"
 					:key="year"
 				>
 					{{ year }}

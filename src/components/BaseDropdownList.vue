@@ -16,12 +16,10 @@
 		elements: TypeElement[]
 	}>();
 
-
 	const isActiveList = ref<boolean>(false);
 
 	const updateFilters = inject<(el: TypeUserFiltersValues, id: TypeUserFilters) => void>("updateFilters");
 	const isInFilters = inject<(el: TypeUserFiltersValues, id: TypeUserFilters) => boolean>("isInFilters");
-
 
 	const onToggleList = (): boolean => isActiveList.value = !isActiveList.value;
 </script>
@@ -34,9 +32,9 @@
 			class="dropdown__header"
 		>
 			{{ title }}
-			<button :class="['dropdown__header-button', isActiveList && 'active']"></button>
+			<button :class="['dropdown__header-button', { active: isActiveList }]"></button>
 		</header>
-		<ul :class="['dropdown__list', isActiveList && 'active']">
+		<ul :class="['dropdown__list', { active: isActiveList }]">
 			<li
 				v-for="element in elements"
 				:key="element"

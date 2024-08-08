@@ -1,29 +1,17 @@
 <script setup lang="ts">
-	import { ref, onMounted, onUnmounted, watch } from "vue";
 	import { Chart, ChartConfiguration, Plugin } from "chart.js/auto";
 	import { onDrawDatasets } from "@/plugins/chartDatasetDraw";
-	import { useTheme } from "@/composables/theme";
+	import { useChart } from "@/composables/UseChart";
 
 
 	const props = defineProps<{
 		title: string,
 		config: ChartConfiguration
 	}>();
-	
 
-	const { theme } = useTheme();
-	const canvasRef = ref<HTMLCanvasElement | null>(null);
-
-	let chart: Chart | null = null;
-	
-
-	const destroyChart = (): void => { 
-		chart && chart.destroy();
-	}
-
-	const createChart = (): void => {
+	const onCreateChart = (): void => {
 		if (canvasRef.value) {
-			destroyChart();
+			onDestroyChart();
 			
 			const afterDatasetsDraw: Plugin = {
 				id: "afterDatasetsDraw",
@@ -35,11 +23,9 @@
 				plugins: [afterDatasetsDraw]
 			});
 		}
-	}
+	};
 
-	onMounted(createChart);
-	onUnmounted(destroyChart);
-	watch(theme, createChart);
+	let { canvasRef, chart, onDestroyChart, theme } = useChart(onCreateChart);
 </script>
 
 

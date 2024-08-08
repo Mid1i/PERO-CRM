@@ -1,8 +1,8 @@
 <script setup lang="ts">
-	import { ref, onMounted, watch } from "vue";
+	import { onMounted, ref, watch } from "vue";
 	import type { IWidget } from "@/interfaces/IWidget";
 	import { onFormatPrice } from "@/helpers/formatters";
-	import { useTheme } from "@/composables/theme";
+	import { useTheme } from "@/composables/UseTheme";
 
 
 	const props = defineProps<IWidget>();
@@ -10,7 +10,6 @@
 	const canvasRef = ref<HTMLCanvasElement>();
 	const { theme } = useTheme();
 
-	
 	const drawProgressCircle = (): void => {
 		if (canvasRef.value) {
 			const ctx = <CanvasRenderingContext2D>canvasRef.value.getContext("2d");
@@ -52,7 +51,6 @@
 		}
 	}
 
-
 	onMounted(drawProgressCircle);
 	watch(theme, drawProgressCircle);
 </script>
@@ -60,14 +58,7 @@
 
 <template>
 	<section class="widget">
-		<header 
-			v-html="icon"
-			:class="[
-				'widget__icon',
-				title === 'Общие продажи' && 'sales',
-				title === 'Общие затраты' && 'expenses'
-			]" 
-		></header>
+		<header :class="['widget__icon', { sales: title === 'Общие продажи' }, { expenses: title === 'Общие затраты' }]" v-html="icon"></header>
 		<h3 class="widget__title">{{ title }}</h3>
 		<span class="widget__value">{{ title === "Общие продажи" ? value : onFormatPrice(value) }}</span>
 		<footer class="widget__text">За неделю</footer>

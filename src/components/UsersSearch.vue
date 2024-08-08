@@ -1,8 +1,9 @@
 <script setup lang="ts">
 	import type { IUser } from "@/interfaces/IUser";
+	import BaseSearchInput from "@/components/BaseSearchInput.vue";
 	import TheBlackout from "@/layouts/TheBlackout.vue";
 	import ThePopup from "@/layouts/ThePopup.vue";
-	import { useSearch } from "@/composables/search";
+	import { useSearch } from "@/composables/UseSearch";
 	import { onFormatPhone } from "@/helpers/formatters";
 
 	const props = defineProps<{
@@ -35,16 +36,10 @@
 			title="Поиск по пользователям"
 		>
 			<main class="content">
-				<div class="content__field">
-					<input 
-						v-model="searchRequest"
-						:class="['content__field-input', { active: searchRequest }]"
-						autocomplete="off"
-						id="search"
-						type="text"
-					>
-					<label class="content__field-label" for="search">Введите логин или почту пользователя</label>
-				</div>
+				<BaseSearchInput
+					v-model="searchRequest"
+					placeholder="Введите логин или почту пользователя"
+				/>
 				<section :class="['content__results', { empty: results.length === 0 }]">
 					<h3 v-if="results.length === 0" class="content__title">{{ !searchRequest ? "Здесь будут показаны результаты" : "Ничего не найдено" }}</h3>
 					<template v-else>
@@ -87,44 +82,6 @@
 		flex: 1 0 auto;
 		flex-direction: column;
 		gap: 20px;
-
-		&__field {
-			position: relative;
-
-			&-label {
-				@include h3;
-				color: $--text-secondary;
-				font-weight: 400;
-
-				pointer-events: none;
-				padding: 2px;
-
-				position: absolute;
-				left: 15px;
-				top: 50%;
-
-				transition: all 0.1s ease-in-out;
-				transform: translateY(-50%);
-			}
-
-			&-input {
-				@include h3;
-				background: $--background-secondary;
-				border-radius: 10px;
-
-				transition: all 0.1s ease-in-out;
-				padding: 15px;
-				height: 50px;
-				width: 100%;
-
-				&:focus + .content__field-label,
-				&.active + .content__field-label {
-					color: $--text-primary;
-					font-size: 14px;
-					top: 0px;
-				}
-			}
-		}
 
 		&__results {
 			display: flex;

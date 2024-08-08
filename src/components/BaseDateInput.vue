@@ -1,10 +1,10 @@
 <script setup lang="ts">
-	import { ref, computed, inject } from "vue";
+	import { computed, inject, ref } from "vue";
 	import type { IDate } from "@/interfaces/IDate";
 	import type { TypeUserFiltersDates } from "@/types/TypeUserFilters";
 	import BaseCalendar from "@/components/BaseCalendar.vue";
+	import { usePopup } from "@/composables/UsePopup";
 	import { addLeadingZeros } from "@/helpers/words";
-	import { usePopup } from "@/composables/popup";
 
 	
 	const props = defineProps<{
@@ -13,13 +13,11 @@
 		id: TypeUserFiltersDates,
 	}>();
 
-
 	const switchCurrentPopup = inject<(id: string | null) => string | null>("switchCurrentPopup");
 	const updateFilters = inject<(element: IDate, id: TypeUserFiltersDates) => void>("updateDateFilters");
 
 	const inputDate = ref<Date | null>(null);
 	const { togglePopup } = usePopup();
-
 
 	const toggleCalendar = (): void => {
 		switchCurrentPopup && switchCurrentPopup(`${props.id},${props.step}`);
@@ -36,7 +34,6 @@
 		updateFilters && updateFilters({ [props.step]: undefined }, props.id);
 		inputDate.value = null;
 	}
-
 
 	const formattedValue = computed<string>(() => {
 		const date = inputDate.value;
@@ -55,10 +52,7 @@
 		</button>
 		<button 
 			@click="onClearDate"
-			:class="[
-				'wrapper__cross', 
-				{active: !!inputDate}
-			]"
+			:class="['wrapper__cross', { active: !!inputDate }]"
 		>
 			<svg fill="none" height="20" viewBox="0 0 20 20" width="20">
 				<path d="M10 12.1293L2.54753 19.5817C2.26869 19.8606 1.91381 20 1.48289 20C1.05196 20 0.697084 19.8606 0.41825 19.5817C0.139416 19.3029 0 18.948 0 18.5171C0 18.0862 0.139416 17.7313 0.41825 17.4525L7.87072 10L0.41825 2.54753C0.139416 2.26869 0 1.91381 0 1.48289C0 1.05196 0.139416 0.697084 0.41825 0.41825C0.697084 0.139416 1.05196 0 1.48289 0C1.91381 0 2.26869 0.139416 2.54753 0.41825L10 7.87072L17.4525 0.41825C17.7313 0.139416 18.0862 0 18.5171 0C18.948 0 19.3029 0.139416 19.5817 0.41825C19.8606 0.697084 20 1.05196 20 1.48289C20 1.91381 19.8606 2.26869 19.5817 2.54753L12.1293 10L19.5817 17.4525C19.8606 17.7313 20 18.0862 20 18.5171C20 18.948 19.8606 19.3029 19.5817 19.5817C19.3029 19.8606 18.948 20 18.5171 20C18.0862 20 17.7313 19.8606 17.4525 19.5817L10 12.1293Z" fill="currentColor"/>

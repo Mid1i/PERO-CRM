@@ -10,7 +10,6 @@
 		users: IUser[]
 	}>();
 
-
 	const getCurrentPageUsers = computed<IUser[]>(() => props.users.slice((props.currentPage - 1) * 10, props.currentPage * 10));
 </script>
 

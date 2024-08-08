@@ -16,16 +16,16 @@
 	}>();
 
 	const emits = defineEmits<{
-		(e: "closePopup"): boolean
+		(e: "closePopup"): void
 	}>();
-
 
 	const currentPopup = ref<string | null>(null);
 
+	const switchCurrentPopup = (id: string | null): void => {
+		currentPopup.value = currentPopup.value === id ? null : id;
+	}
 
-	const switchCurrentPopup = (id: string | null): string | null => currentPopup.value = currentPopup.value === id ? null : id;
-
-	const onClosePopup = () => {
+	const onClosePopup = (): void => {
 		switchCurrentPopup(null);
 		emits("closePopup");
 	};

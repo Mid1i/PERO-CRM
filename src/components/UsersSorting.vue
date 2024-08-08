@@ -12,8 +12,8 @@
 	}>();
 
 	defineEmits<{
-		(e: "closePopup"): boolean,
-		(e: "switchSorting", value: TypeSorting): TypeSorting
+		(e: "closePopup"): void,
+		(e: "switchSorting", value: TypeSorting): void
 	}>();
 </script>
 

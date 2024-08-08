@@ -1,5 +1,4 @@
-import type { Ref, ComputedRef, ShallowRef } from "vue";
-import { ref, computed, watch, shallowRef } from "vue";
+import { Ref, ComputedRef, ShallowRef, ref, computed, watch, shallowRef } from "vue";
 import { getWordByAmount } from "@/helpers/words";
 import { debounce } from "@/helpers/debounce";
 
@@ -13,11 +12,7 @@ type TypeUseSearchReturn<T> = {
 };
 
 
-export const useSearch = <T extends Record<string, any>>(
-	data: T[], 
-	searchFields: (keyof T)[], 
-	clearSearch: () => void
-): TypeUseSearchReturn<T> => {
+export const useSearch = <T extends Record<string, any>>(data: T[], searchFields: (keyof T)[], clearSearch: () => void): TypeUseSearchReturn<T> => {
 	const searchRequest = ref<string>("");
 	const results = shallowRef<T[]>([]);
 
@@ -39,12 +34,10 @@ export const useSearch = <T extends Record<string, any>>(
 		return text.replace(regex, `<span class="highlight">$1</span>`);
 	}
 
-
 	const generateResultsMessage = computed<string>(() => {
 		const length = results.value.length;
 		return `Найден${length % 10 !== 1 ? 'о' : ''} ${getWordByAmount(length, 'результат', 'результата', 'результатов')}`;
 	});
-
 
 	watch(searchRequest, debounce(<() => T[]>onSearch));
 

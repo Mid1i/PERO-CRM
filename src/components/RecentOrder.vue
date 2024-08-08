@@ -12,15 +12,7 @@
 		<td class="order__item">{{ id }}</td>
 		<td class="order__item">{{ creationDate }}</td>
 		<td class="order__item">{{ onFormatPrice(totalPrice) }}</td>
-		<td 
-			:class="[
-				'order__item',
-				status === 'Доставлен' && 'delivered',
-				status === 'Отменен' && 'canceled'
-			]"
-		>
-			{{ status }}
-		</td>
+		<td	:class="['order__item', { delivered: status === 'Доставлен' }, { canceled: status === 'Отменен' }]">{{ status }}</td>
 		<td class="order__item details">Детали</td>
 	</tr>
 </template>

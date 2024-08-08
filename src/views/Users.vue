@@ -1,27 +1,26 @@
 <script setup lang="ts">
-	import { ref, computed, watch, provide } from "vue";
-	import type { IUser } from "@/interfaces/IUser";
+	import { computed, provide, ref } from "vue";
+	import type { IDate } from "@/interfaces/IDate";
 	import type { IFilters } from "@/interfaces/IFilters";
 	import type { TypeSorting } from "@/types/TypeSorting";
 	import type { TypeUserFilters, TypeUserFiltersDates, TypeUserFiltersValues } from "@/types/TypeUserFilters";
-	import UsersStatistics from "@/components/UsersStatistics.vue";
-	import UsersFilters from "@/components/UsersFilters.vue";
-	import UsersSorting from "@/components/UsersSorting.vue";
-	import UsersSearch from "@/components/UsersSearch.vue";
-	import UsersTable from "@/components/UsersTable.vue";
 	import Pagination from "@/components/Pagination.vue";
+	import UsersFilters from "@/components/UsersFilters.vue";
+	import UsersSearch from "@/components/UsersSearch.vue";
+	import UsersSorting from "@/components/UsersSorting.vue";
+	import UsersStatistics from "@/components/UsersStatistics.vue";
+	import UsersTable from "@/components/UsersTable.vue";
 	import WeekChart from "@/components/WeekChart.vue";
-	import { getLabelsForChart } from "@/helpers/charts";
 	import { chartConfig } from "@/plugins/chartConfig";
+	import { getLabelsForChart } from "@/helpers/charts";
 	import { getWordByAmount } from "@/helpers/words";
-	import { usePopup } from "@/composables/popup";
-	import { useTheme } from "@/composables/theme";
+	import { usePopup } from "@/composables/UsePopup";
+	import { useTheme } from "@/composables/UseTheme";
 	import { USERS } from "@/users";
 	import {
-		USERS_COLORS, 
-		WEEK_USERS, 
+		USERS_COLORS,
+		WEEK_USERS,
 	} from "@/constants";
-	import { IDate } from "@/interfaces/IDate"
 
 
 	const { theme } = useTheme();
@@ -40,25 +39,20 @@
 	const { isActivePopup: isActiveSorting, togglePopup: toggleSortingPopup } = usePopup();
 	const { isActivePopup: isActiveFilters, togglePopup: toggleFiltersPopup } = usePopup();
 
-
-	const switchSorting = (value: TypeSorting): TypeSorting | null => currentSorting.value = currentSorting.value === value ? null : value;
-
-	const searchUser = (request: string): IUser[] => request ? USERS.filter(user => user.login.toLowerCase().includes(request) || user.email.toLowerCase().includes(request)) : [];
-
+	const switchSorting = (value: TypeSorting): void => {
+		currentSorting.value = currentSorting.value === value ? null : value;
+	}
 
 	const isInFilters = (element: TypeUserFiltersValues, id: TypeUserFilters): boolean => {
-		const currentFilter = currentFilters.value?.[id];
-		
-		if (Array.isArray(currentFilter)) return !!currentFilter.find(value => value === element);
-		
-		return currentFilter === element;
+		const currentFilter = currentFilters.value[id];
+		return Array.isArray(currentFilter) ? !!currentFilter.find(value => value === element) : currentFilter === element;
 	}
 
 	const updateDateFilters = (element: IDate, id: TypeUserFiltersDates): void => {
 		currentFilters.value = {
 			...currentFilters.value,
 			[id]: {
-				...currentFilters.value?.[id],
+				...currentFilters.value[id],
 				...element
 			}
 		}
@@ -90,14 +84,10 @@
 	provide("updateFilters", updateFilters);
 	provide("isInFilters", isInFilters)
 
-
 	const getTableFooterString = computed<string>(() => {
 		const amount = USERS.length;
 		return `${currentPage.value} страница из ${Math.ceil(amount / 11)} (${getWordByAmount(amount, "пользователь", "пользователя", "пользователей")})`;
 	});
-
-
-	watch(currentFilters, () => console.log(currentFilters.value))
 </script>
 
 <template>
@@ -175,7 +165,7 @@
 
 	<UsersSearch 
 		@close-popup="toggleSearchPopup"
-		:search-user="searchUser"
+		:users="USERS"
 		:is-visible="isActiveSearch"
 	/>
 

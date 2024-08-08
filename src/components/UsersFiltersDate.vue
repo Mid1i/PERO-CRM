@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { Ref, inject } from "vue";
+	import { inject } from "vue";
 	import type { TypeUserFiltersDates } from "@/types/TypeUserFilters";
 	import BaseDateInput from "@/components/BaseDateInput.vue";
 
@@ -9,8 +9,7 @@
 		title: string
 	}>();
 
-
-	const currentPopup = <Ref<string | null>>inject("currentPopup");
+	const currentPopup = inject<string | null>("currentPopup");
 </script>
 
 

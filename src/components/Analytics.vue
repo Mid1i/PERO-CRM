@@ -7,7 +7,6 @@
 
 	const percentage = ref(0);
 
-	
 	const animatePercentage = (): void => {
 		const calculatedPercentage = Math.ceil(props.value / props.previousValue * 100 - 100);
 		const startTime = performance.now();
@@ -17,7 +16,6 @@
 			const progress = Math.min(elapsedTime / 1000, 1);
 			
 			percentage.value = Math.floor(calculatedPercentage * progress);
-
 			progress < 1 && requestAnimationFrame(animate);
 		}
 
@@ -30,25 +28,12 @@
 
 <template>
 	<section class="analytics-item">
-		<div 
-			:class="[
-				'analytics-item__icon',
-				title === 'Онлайн заказы' && 'online',
-				title === 'Офлайн заказы' && 'offline'
-			]" 
-			v-html="icon"
-		></div>
+		<div :class="['analytics-item__icon', { online: title === 'Онлайн заказы' }, { offline: title === 'Офлайн заказы' }]" v-html="icon"></div>
 		<div class="analytics-item__col">
 			<h3 class="analytics-item__title">{{ title }}</h3>
 			<p class="analytics-item__text">За неделю</p>
 		</div>
-		<span 
-			:class="[
-				'analytics-item__value',
-				previousValue < value && 'increased',
-				previousValue > value && 'decreased'
-			]"
-		>
+		<span :class="['analytics-item__value', { increased: previousValue < value }, { decreased: previousValue > value }]">
 			{{ `${previousValue < value ? "+" : ""}${percentage}%` }}
 		</span>
 		<span class="analytics-item__value">{{ value }}</span>

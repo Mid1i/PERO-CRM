@@ -1,8 +1,7 @@
 <script setup lang="ts">
-	import { ref, onMounted, onUnmounted } from "vue";
 	import { Chart } from "chart.js/auto";
+	import { useChart } from "@/composables/UseChart";
 	import { chartConfig } from "@/plugins/doughnutChartConfig";
-	import { useTheme } from "@/composables/theme";
 
 
 	const props = defineProps<{
@@ -11,27 +10,15 @@
 		labels: string[]
 	}>();
 
-	
-	const { theme } = useTheme();
-	const canvasRef = ref<HTMLCanvasElement | null>(null);
-
-	let chart: Chart | null = null;
-	
-
-	const destroyChart = (): void => { 
-		chart && chart.destroy();
-	}
-
-	const createChart = (): void => {
+	const onCreateChart = (): void => {
 		if (canvasRef.value) {
-			destroyChart();
+			onDestroyChart();
 			
 			chart = new Chart(canvasRef.value, chartConfig(props.data, props.labels, props.colors, theme.value));
 		}
-	}
+	};
 
-	onMounted(createChart);
-	onUnmounted(destroyChart);
+	let { canvasRef, chart, onDestroyChart, theme } = useChart(onCreateChart);
 </script>
 
 
@@ -46,10 +33,7 @@
 				:key="label"
 				class="chart__list-el"
 			>
-				<span 
-					:style="`background: ${colors[index]}`"
-					class="chart__list-box" 
-				></span>
+				<span :style="`background: ${colors[index]}`"	class="chart__list-box"></span>
 				{{ label }}
 			</li>
 		</ul>
