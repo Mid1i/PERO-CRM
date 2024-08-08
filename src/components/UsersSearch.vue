@@ -1,56 +1,36 @@
 <script setup lang="ts">
-	import { ref, computed, watch } from "vue";
-	import TheBlackout from "@/layouts/TheBlackout.vue";
 	import type { IUser } from "@/interfaces/IUser";
+	import TheBlackout from "@/layouts/TheBlackout.vue";
 	import ThePopup from "@/layouts/ThePopup.vue";
+	import { useSearch } from "@/composables/search";
 	import { onFormatPhone } from "@/helpers/formatters";
-	import { getWordByAmount } from "@/helpers/words";
-	import { debounce } from "@/helpers/debounce";
-
 
 	const props = defineProps<{
-		searchUser: (request: string) => IUser[],
-		isVisible: boolean
+		isVisible: boolean,
+		users: IUser[]
 	}>();
 
 	const emits = defineEmits<{
-		(e: "closePopup"): boolean
+		(e: "closePopup"): void
 	}>();
 
-
-	const searchRequest = ref<string>("");
-	const results = ref<IUser[]>([]);
-
-	
-	const onClosePopup = (): void => {
-		window.setTimeout(() => searchRequest.value = "", 300);
-		emits("closePopup");
-	}
-
-	const onSearchUser = (): IUser[] => results.value = props.searchUser(searchRequest.value);
-
-	const onHighlightMatch = (text: string): string => {
-		const regex = new RegExp(searchRequest.value, "i");
-		return text.replace(regex, match => `<span class="highlight">${match}</span>`);
-	}
-
-
-	const getSearchAmount = computed<string>(() => {
-		const length = results.value.length;
-		return `Найден${length % 10 !== 1 ? 'о' : ''} ${getWordByAmount(length, 'результат', 'результата', 'результатов')}`;
-	});
-
-	watch(searchRequest, debounce(<() => IUser[]>onSearchUser));
+	const { 
+		searchRequest, 
+		results, 
+		onClearSearch, 
+		onHighlightMatches, 
+		generateResultsMessage 
+	} = useSearch<IUser>(props.users, ["login", "email"], () => emits("closePopup"));
 </script>
 
 
 <template>
 	<TheBlackout 
-		@close-popup="onClosePopup"
+		@close-popup="onClearSearch"
 		:is-visible="isVisible"
 	>
 		<ThePopup
-			@close-popup="onClosePopup"
+			@close-popup="onClearSearch"
 			:is-visible="isVisible"	
 			title="Поиск по пользователям"
 		>
@@ -58,45 +38,38 @@
 				<div class="content__field">
 					<input 
 						v-model="searchRequest"
-						:class="[
-							'content__field-input',
-							searchRequest && 'active'
-						]"
+						:class="['content__field-input', { active: searchRequest }]"
 						autocomplete="off"
 						id="search"
 						type="text"
 					>
 					<label class="content__field-label" for="search">Введите логин или почту пользователя</label>
 				</div>
-				<section 
-					:class="[
-						'content__results',
-						results.length === 0 && 'empty'
-					]"
-				>
-					<h3 v-if="results.length === 0 && !searchRequest" class="content__title">Здесь будут показаны результаты</h3>
-					<h3 v-if="results.length === 0 && searchRequest" class="content__title">Ничего не найдено</h3>
-					<h3 v-if="results.length > 0" class="content__title">{{ getSearchAmount }}</h3>
-					<ul v-if="results.length > 0" class="content__list">
-						<li 
-							v-for="user in results"
-							:key="user.id"
-							class="content__list-el"
-						>
-							<div class="content__list-wrapper">
-								<img 
-									:alt="user.login"
-									:src="user.avatar" 
-									class="content__list-image"
-								>
-							</div>
-							<h6 class="content__list-title" v-html="onHighlightMatch(user.login)"></h6>
-							<span class="content__list-text date">На сайте с <b>{{ user.dateOfRegistration }}</b></span>
-							<span class="content__list-text email" v-html="onHighlightMatch(user.email)"></span>
-							<span class="content__list-text phone">{{ onFormatPhone(user.phone) }}</span>
-							<span class="content__list-text country">{{ user.country }}</span>
-						</li>
-					</ul>
+				<section :class="['content__results', { empty: results.length === 0 }]">
+					<h3 v-if="results.length === 0" class="content__title">{{ !searchRequest ? "Здесь будут показаны результаты" : "Ничего не найдено" }}</h3>
+					<template v-else>
+						<h3 class="content__title">{{ generateResultsMessage }}</h3>
+						<ul class="content__list">
+							<li 
+								v-for="user in results"
+								:key="user.id"
+								class="content__list-el"
+							>
+								<div class="content__list-wrapper">
+									<img 
+										:alt="user.login"
+										:src="user.avatar" 
+										class="content__list-image"
+									>
+								</div>
+								<h6 class="content__list-title" v-html="onHighlightMatches(user.login)"></h6>
+								<span class="content__list-text date">На сайте с <b>{{ user.dateOfRegistration }}</b></span>
+								<span class="content__list-text email" v-html="onHighlightMatches(user.email)"></span>
+								<span class="content__list-text phone">{{ onFormatPhone(user.phone) }}</span>
+								<span class="content__list-text country">{{ user.country }}</span>
+							</li>
+						</ul>
+					</template>
 				</section>
 			</main>
 		</ThePopup>
