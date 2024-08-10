@@ -1,6 +1,6 @@
 <script setup lang="ts">
 	import { Chart, ChartConfiguration, Plugin } from "chart.js/auto";
-	import { onDrawDatasets } from "@/plugins/chartDatasetDraw";
+	import { drawDatasets } from "@/plugins/chartDatasetDraw";
 	import { useChart } from "@/composables/UseChart";
 
 
@@ -9,13 +9,13 @@
 		config: ChartConfiguration
 	}>();
 
-	const onCreateChart = (): void => {
+	const createChart = (): void => {
 		if (canvasRef.value) {
-			onDestroyChart();
+			destroyChart();
 			
 			const afterDatasetsDraw: Plugin = {
 				id: "afterDatasetsDraw",
-				afterDatasetsDraw: (chart: Chart): void => onDrawDatasets(chart, theme.value)
+				afterDatasetsDraw: (chart: Chart): void => drawDatasets(chart, theme.value)
 			}
 			
 			chart = new Chart(canvasRef.value, {
@@ -25,7 +25,7 @@
 		}
 	};
 
-	let { canvasRef, chart, onDestroyChart, theme } = useChart(onCreateChart);
+	let { canvasRef, chart, destroyChart, theme } = useChart(createChart);
 </script>
 
 

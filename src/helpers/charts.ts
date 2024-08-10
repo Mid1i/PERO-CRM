@@ -1,7 +1,7 @@
 import type { TypeWeekDays } from "@/types/TypeWeekDays";
 
 
-export const getLabelsForChart = (): TypeWeekDays[] => {
+export const getWeekLabels = (): TypeWeekDays[] => {
 	let date = new Date();
 	let days: TypeWeekDays[] = [];
 

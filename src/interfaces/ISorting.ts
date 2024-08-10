@@ -1,8 +1,4 @@
-import type { TypeSorting } from "@/types/TypeSorting";
-
-
 export interface ISorting {
-	icon: string,
-	title: string,
-	value: TypeSorting
+	field: "login" | "dateOfBirth" | "dateOfRegistration",
+	order: "asc"| "desc"
 }

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 	import { onMounted, ref, watch } from "vue";
 	import type { IWidget } from "@/interfaces/IWidget";
-	import { onFormatPrice } from "@/helpers/formatters";
+	import { formatPrice } from "@/helpers/formatters";
 	import { useTheme } from "@/composables/UseTheme";
 
 
@@ -60,7 +60,7 @@
 	<section class="widget">
 		<header :class="['widget__icon', { sales: title === 'Общие продажи' }, { expenses: title === 'Общие затраты' }]" v-html="icon"></header>
 		<h3 class="widget__title">{{ title }}</h3>
-		<span class="widget__value">{{ title === "Общие продажи" ? value : onFormatPrice(value) }}</span>
+		<span class="widget__value">{{ title === "Общие продажи" ? value : formatPrice(value) }}</span>
 		<footer class="widget__text">За неделю</footer>
 		
 		<canvas class="widget__progress" ref="canvasRef" height="200" width="200"></canvas>

@@ -1,59 +1,37 @@
 <script setup lang="ts">
 	import { ref, computed } from "vue";
 	import type { IDay } from "@/interfaces/IDay";
-	import { onFormatMonth } from "@/helpers/formatters";
+	import { formatMonth } from "@/helpers/formatters";
 	import { CALENDAR_HEADERS } from "@/constants";
-	import { getDay } from "@/helpers/calendar";
+	import { getWeekDayNumber } from "@/helpers/calendar";
 
 
 	const props = defineProps<{
 		isActive: boolean
-		inputDate: Date | null
+		userDate: Date | null
 	}>();
 
 	defineEmits<{
-		(e: "changeDate", date: Date): void
+		(e: "updateDate", date: Date): void
 	}>();
 
-	const calendarContent = ref<"calendar" | "months" | "years">("calendar");
-	const currentYearsPage = ref<number>(0);
+	const activeMode = ref<"calendar" | "months" | "years">("calendar");
+	const yearsModePage = ref<number>(0);
 
-	const currentDate = props.inputDate || new Date();
-	const currentYear = ref<number>(currentDate.getFullYear());
+	const currentDate = props.userDate || new Date();
 	const currentMonth = ref<number>(currentDate.getMonth());
-
-	const isSelected = (date: Date): boolean => props.inputDate?.getTime() === date.getTime();
-
-	const setYear = (year: number): void => {
-		calendarContent.value = "calendar";
-		currentYear.value = year;
-	}
-
-	const setMonth = (month: number): void => {
-		calendarContent.value = "calendar";
-		currentMonth.value = month;
-	}
-
-	const changeMonth = (isPrevious: boolean): void => {
-		if (isPrevious) {
-				currentMonth.value = (currentMonth.value + 11) % 12;
-				if (currentMonth.value === 11) currentYear.value--;
-		} else {
-				currentMonth.value = (currentMonth.value + 1) % 12;
-				if (currentMonth.value === 0) currentYear.value++;
-		}
-	}
+	const currentYear = ref<number>(currentDate.getFullYear());
 
 	const getMonthDates = computed<IDay[]>(() => {
 		let date = new Date(currentYear.value, currentMonth.value);
-		const firstDayOfMonth: number = getDay(date);
+		const firstDayOfMonth: number = getWeekDayNumber(date);
 		const monthDates: IDay[] = [];
 		
 		date.setDate(date.getDate() - firstDayOfMonth);
 
 		const previousMonthCondition = (): boolean => monthDates.length < firstDayOfMonth;
 		const currentMonthCondition = (): boolean => date.getMonth() === currentMonth.value;
-		const nextMonthCondition = (): boolean => getDay(date) !== 0 && getDay(date) < 7;
+		const nextMonthCondition = (): boolean => getWeekDayNumber(date) !== 0 && getWeekDayNumber(date) < 7;
 		
 		while (previousMonthCondition() || currentMonthCondition() || nextMonthCondition()) {
 			monthDates.push({
@@ -67,38 +45,57 @@
 		return monthDates;
 	});
 
-	const getYears = computed<number[]>(() => {
-		const nearestYear = currentYear.value - (currentYear.value % 10) + 10 * currentYearsPage.value;
+	const getYearsModeContent = computed<number[]>(() => {
+		const nearestYear = currentYear.value - (currentYear.value % 10) + 10 * yearsModePage.value;
 		return Array.from({ length: 21 }, (_, i) => nearestYear + i);
-	})
+	});
+
+	const isSelectedDate = (date: Date): boolean => props.userDate?.getTime() === date.getTime();
+
+	const updateYear = (year: number): void => {
+		activeMode.value = "calendar";
+		currentYear.value = year;
+	}
+
+	const updateMonth = (month: number, isPrevious?: boolean): void => {
+		const isMonthBoundary = (month === 11 && isPrevious) || (month === 0 && !isPrevious);
+		currentMonth.value = month;
+
+		if (activeMode.value === "months") {
+			activeMode.value = "calendar";
+			return;
+		}
+
+		isMonthBoundary && (updateYear(currentYear.value += isPrevious ? -1 : 1));
+	}
 </script>
 
 
 <template>
 	<div :class="['calendar', { active: isActive }]">
-		<div :class="['calendar__main', { active: calendarContent === 'calendar' && isActive }]">
+		<div :class="['calendar__main', { active: activeMode === 'calendar' && isActive }]">
 			<header class="calendar__header">
 				<div class="calendar__header-month">
-					<button @click="() => changeMonth(true)" class="calendar__header-icon">
+					<button @click="() => updateMonth((currentMonth + 11) % 12, true)" class="calendar__header-icon">
 						<svg fill="none" height="14" viewBox="0 0 8 14" width="8">
 							<path d="M8 1.645L3.05533 7L8 12.355L6.47773 14L3.71833e-08 7L6.47773 0L8 1.645Z" fill="#EDEFFD"/>
 						</svg>
 					</button>
-					<button @click="() => calendarContent = 'months'" class="calendar__header-button month">{{ onFormatMonth(currentMonth) }}</button>
-					<button @click="() => changeMonth(false)" class="calendar__header-icon">
+					<button @click="() => activeMode = 'months'" class="calendar__header-button month">{{ formatMonth(currentMonth) }}</button>
+					<button @click="() => updateMonth((currentMonth + 1) % 12, false)" class="calendar__header-icon">
 						<svg fill="none" height="14" viewBox="0 0 8 14" width="8">
 							<path d="M0 12.355L4.94467 7L0 1.645L1.52227 4.76837e-07L8 7L1.52227 14L0 12.355Z" fill="#EDEFFD"/>
 						</svg>
 					</button>
 				</div>
 				<div class="calendar__header-year">
-					<button @click="() => setYear(currentYear - 1)" class="calendar__header-icon">
+					<button @click="() => updateYear(currentYear - 1)" class="calendar__header-icon">
 						<svg fill="none" height="14" viewBox="0 0 8 14" width="8">
 							<path d="M8 1.645L3.05533 7L8 12.355L6.47773 14L3.71833e-08 7L6.47773 0L8 1.645Z" fill="#EDEFFD"/>
 						</svg>
 					</button>
-					<button @click="() => calendarContent = 'years'" class="calendar__header-button">{{ currentYear }}</button>
-					<button @click="() => setYear(currentYear + 1)" class="calendar__header-icon">
+					<button @click="() => activeMode = 'years'" class="calendar__header-button">{{ currentYear }}</button>
+					<button @click="() => updateYear(currentYear + 1)" class="calendar__header-icon">
 						<svg fill="none" height="14" viewBox="0 0 8 14" width="8">
 							<path d="M0 12.355L4.94467 7L0 1.645L1.52227 4.76837e-07L8 7L1.52227 14L0 12.355Z" fill="#EDEFFD"/>
 						</svg>
@@ -115,41 +112,41 @@
 				</span>
 				<span
 					v-for="{ date, isMuted }, index) in getMonthDates"
-					@click="$emit('changeDate', date)"
-					:class="['calendar__body-item', { selected: isSelected(date) }, { muted: isMuted }]"
+					@click="$emit('updateDate', date)"
+					:class="['calendar__body-item', { selected: isSelectedDate(date) }, { muted: isMuted }]"
 					:key="index"
 				>
 					{{ date.getDate() }}
 				</span>
 			</div>
 		</div>
-		<ul :class="['calendar__months', { active: calendarContent === 'months' && isActive }]">
+		<ul :class="['calendar__months', { active: activeMode === 'months' && isActive }]">
 			<li 
 				v-for="month of 12"
-				@click="() => setMonth(month - 1)"
+				@click="() => updateMonth(month - 1)"
 				:class="['calendar__months-el', { selected: currentMonth === month - 1 }]"
 				:key="month"
 			>
-				{{ onFormatMonth(month - 1) }}
+				{{ formatMonth(month - 1) }}
 			</li>
 		</ul>
-		<div :class="['calendar__years', { active: calendarContent === 'years' && isActive }]">
-			<button @click="() => currentYearsPage -= 1" class="calendar__years-button">
+		<div :class="['calendar__years', { active: activeMode === 'years' && isActive }]">
+			<button @click="() => yearsModePage -= 1" class="calendar__years-button">
 				<svg fill="none" height="14" viewBox="0 0 8 14" width="8">
 					<path d="M8 1.645L3.05533 7L8 12.355L6.47773 14L3.71833e-08 7L6.47773 0L8 1.645Z" fill="#EDEFFD"/>
 				</svg>
 			</button>
 			<ul class="calendar__years-list">
 				<li 
-					v-for="year in getYears"
-					@click="() => setYear(year)"
+					v-for="year in getYearsModeContent"
+					@click="() => updateYear(year)"
 					:class="['calendar__years-el', { selected: currentYear === year }]"
 					:key="year"
 				>
 					{{ year }}
 				</li>
 			</ul>
-			<button @click="() => currentYearsPage += 1" class="calendar__years-button">
+			<button @click="() => yearsModePage += 1" class="calendar__years-button">
 				<svg fill="none" height="14" viewBox="0 0 8 14" width="8">
 					<path d="M0 12.355L4.94467 7L0 1.645L1.52227 4.76837e-07L8 7L1.52227 14L0 12.355Z" fill="#EDEFFD"/>
 				</svg>

@@ -6,27 +6,27 @@ import { debounce } from "@/helpers/debounce";
 type TypeUseSearchReturn<T> = {
 	searchRequest: Ref<string>,
 	results: ShallowRef<T[]>,
-	onClearSearch: () => void,
-	onHighlightMatches: (text: string) => string,
+	clearSearch: () => void,
+	highlightMatches: (text: string) => string,
 	generateResultsMessage: ComputedRef<string>
 };
 
 
-export const useSearch = <T extends Record<string, any>>(data: T[], searchFields: (keyof T)[], clearSearch: () => void): TypeUseSearchReturn<T> => {
+export const useSearch = <T extends Record<string, any>>(data: T[], searchFields: (keyof T)[], clearFunction: () => void): TypeUseSearchReturn<T> => {
 	const searchRequest = ref<string>("");
 	const results = shallowRef<T[]>([]);
 
-	const onClearSearch = (): void => {
+	const clearSearch = (): void => {
 		setTimeout(() => (searchRequest.value = ""), 300);
-		clearSearch();
+		clearFunction();
 	}
 
-	const onSearch = (): void => {
+	const search = (): void => {
 		const request = searchRequest.value.toLowerCase();
 		results.value = request ? data.filter(value => searchFields.some(field => value[field].toString().toLowerCase().includes(request))) : [];
 	}
 
-	const onHighlightMatches = (text: string): string => {
+	const highlightMatches = (text: string): string => {
 		const request = searchRequest.value;
 		if (!request) return text;
 
@@ -39,14 +39,14 @@ export const useSearch = <T extends Record<string, any>>(data: T[], searchFields
 		return `Найден${length % 10 !== 1 ? 'о' : ''} ${getWordByAmount(length, 'результат', 'результата', 'результатов')}`;
 	});
 
-	watch(searchRequest, debounce(<() => T[]>onSearch));
+	watch(searchRequest, debounce(<() => T[]>search));
 
 
 	return {
 		searchRequest,
 		results,
-		onClearSearch,
-		onHighlightMatches,
+		clearSearch,
+		highlightMatches,
 		generateResultsMessage
 	}
 }

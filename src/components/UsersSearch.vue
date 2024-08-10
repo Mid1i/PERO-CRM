@@ -4,7 +4,7 @@
 	import TheBlackout from "@/layouts/TheBlackout.vue";
 	import ThePopup from "@/layouts/ThePopup.vue";
 	import { useSearch } from "@/composables/UseSearch";
-	import { onFormatPhone } from "@/helpers/formatters";
+	import { formatPhone } from "@/helpers/formatters";
 
 	const props = defineProps<{
 		isVisible: boolean,
@@ -18,8 +18,8 @@
 	const { 
 		searchRequest, 
 		results, 
-		onClearSearch, 
-		onHighlightMatches, 
+		clearSearch, 
+		highlightMatches, 
 		generateResultsMessage 
 	} = useSearch<IUser>(props.users, ["login", "email"], () => emits("closePopup"));
 </script>
@@ -27,11 +27,11 @@
 
 <template>
 	<TheBlackout 
-		@close-popup="onClearSearch"
+		@close-popup="clearSearch"
 		:is-visible="isVisible"
 	>
 		<ThePopup
-			@close-popup="onClearSearch"
+			@close-popup="clearSearch"
 			:is-visible="isVisible"	
 			title="Поиск по пользователям"
 		>
@@ -57,10 +57,10 @@
 										class="content__list-image"
 									>
 								</div>
-								<h6 class="content__list-title" v-html="onHighlightMatches(user.login)"></h6>
+								<h6 class="content__list-title" v-html="highlightMatches(user.login)"></h6>
 								<span class="content__list-text date">На сайте с <b>{{ user.dateOfRegistration }}</b></span>
-								<span class="content__list-text email" v-html="onHighlightMatches(user.email)"></span>
-								<span class="content__list-text phone">{{ onFormatPhone(user.phone) }}</span>
+								<span class="content__list-text email" v-html="highlightMatches(user.email)"></span>
+								<span class="content__list-text phone">{{ formatPhone(user.phone) }}</span>
 								<span class="content__list-text country">{{ user.country }}</span>
 							</li>
 						</ul>

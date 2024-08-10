@@ -19,19 +19,19 @@
 		(e: "closePopup"): void
 	}>();
 
-	const currentPopup = ref<string | null>(null);
+	const activePopup = ref<string | null>(null);
 
-	const switchCurrentPopup = (id: string | null): void => {
-		currentPopup.value = currentPopup.value === id ? null : id;
+	const setActivePopup = (id: string | null): void => {
+		activePopup.value = activePopup.value === id ? null : id;
 	}
 
 	const onClosePopup = (): void => {
-		switchCurrentPopup(null);
+		setActivePopup(null);
 		emits("closePopup");
 	};
 
-	provide("currentPopup", currentPopup);
-	provide("switchCurrentPopup", switchCurrentPopup);
+	provide("activePopup", activePopup);
+	provide("setActivePopup", setActivePopup);
 </script>
 
 

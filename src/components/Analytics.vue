@@ -22,7 +22,7 @@
 		requestAnimationFrame(animate);
 	}
 
-	onMounted(animatePercentage)
+	onMounted(animatePercentage);
 </script>
 
 

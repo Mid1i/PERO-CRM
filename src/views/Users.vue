@@ -1,33 +1,30 @@
 <script setup lang="ts">
 	import { computed, provide, ref } from "vue";
-	import type { IDate } from "@/interfaces/IDate";
+	import type { TypeUserFilters } from "@/types/TypeUserFilters";
+	import type { TypeActivity } from "@/types/TypeActivity";
+	import type { ISorting } from "@/interfaces/ISorting";
 	import type { IFilters } from "@/interfaces/IFilters";
-	import type { TypeSorting } from "@/types/TypeSorting";
-	import type { TypeUserFilters, TypeUserFiltersDates, TypeUserFiltersValues } from "@/types/TypeUserFilters";
-	import Pagination from "@/components/Pagination.vue";
-	import UsersFilters from "@/components/UsersFilters.vue";
-	import UsersSearch from "@/components/UsersSearch.vue";
-	import UsersSorting from "@/components/UsersSorting.vue";
+	import type { IDate } from "@/interfaces/IDate";
 	import UsersStatistics from "@/components/UsersStatistics.vue";
+	import UsersFilters from "@/components/UsersFilters.vue";
+	import UsersSorting from "@/components/UsersSorting.vue";
+	import UsersSearch from "@/components/UsersSearch.vue";
 	import UsersTable from "@/components/UsersTable.vue";
+	import Pagination from "@/components/Pagination.vue";
 	import WeekChart from "@/components/WeekChart.vue";
+	import { USERS_COLORS, WEEK_USERS } from "@/constants";
+	import { getWeekLabels } from "@/helpers/charts";
 	import { chartConfig } from "@/plugins/chartConfig";
-	import { getLabelsForChart } from "@/helpers/charts";
-	import { getWordByAmount } from "@/helpers/words";
 	import { usePopup } from "@/composables/UsePopup";
 	import { useTheme } from "@/composables/UseTheme";
+	import { getWordByAmount } from "@/helpers/words";
 	import { USERS } from "@/users";
-	import {
-		USERS_COLORS,
-		WEEK_USERS,
-	} from "@/constants";
 
-
-	const { theme } = useTheme();
 
 	const currentPage = ref<number>(1);
-	const currentSorting = ref<TypeSorting | null>(null);
-	const currentFilters = ref<IFilters>({
+
+	const sorting = ref<ISorting | null>(null);
+	const filters = ref<IFilters>({
 		isActive: null,
 		countries: [],
 		roles: [],
@@ -39,55 +36,52 @@
 	const { isActivePopup: isActiveSorting, togglePopup: toggleSortingPopup } = usePopup();
 	const { isActivePopup: isActiveFilters, togglePopup: toggleFiltersPopup } = usePopup();
 
-	const switchSorting = (value: TypeSorting): void => {
-		currentSorting.value = currentSorting.value === value ? null : value;
+	const { theme } = useTheme();
+
+	const getTableSummary = computed<string>(() => {
+		const amount = USERS.length;
+		return `${currentPage.value} страница из ${Math.ceil(amount / 11)} (${getWordByAmount(amount, "пользователь", "пользователя", "пользователей")})`;
+	});
+
+	const setSorting = (value: ISorting): void => {
+		sorting.value = sorting.value === value ? null : value;
 	}
 
-	const isInFilters = (element: TypeUserFiltersValues, id: TypeUserFilters): boolean => {
-		const currentFilter = currentFilters.value[id];
-		return Array.isArray(currentFilter) ? !!currentFilter.find(value => value === element) : currentFilter === element;
+	const isFilterActive = <K extends keyof TypeUserFilters>(element: TypeUserFilters[K], id: K): boolean => {
+		const currentFilter: IFilters[K] = filters.value[id];
+		return Array.isArray(currentFilter) ? (currentFilter as TypeUserFilters[K][]).includes(element) : currentFilter === element;
 	}
 
-	const updateDateFilters = (element: IDate, id: TypeUserFiltersDates): void => {
-		currentFilters.value = {
-			...currentFilters.value,
-			[id]: {
-				...currentFilters.value[id],
-				...element
+	const updateFilters = <K extends keyof TypeUserFilters>(element: TypeUserFilters[K], id: K): void => {
+		const currentFilter: IFilters[K] = filters.value[id];
+		const isActive = isFilterActive(element, id);
+		
+		if (Array.isArray(currentFilter)) {
+		 	const updatedFilter =  isActive ? currentFilter.filter(value => value !== element) : [...currentFilter, element];
+			filters.value[id] = updatedFilter as typeof currentFilter;
+			return;
+		} 
+		
+		if (id === "isActive") {
+			filters.value.isActive = isActive ? null : element as TypeActivity;
+			return;
+		}
+
+		if (typeof currentFilter === "object") {
+			filters.value = {
+				...filters.value,
+				[id]: {
+					...currentFilter,
+					...element as IDate
+				}
 			}
 		}
 	}
 
-	const updateFilters = (element: TypeUserFiltersValues, id: TypeUserFilters): void => {
-		const currentFilter = currentFilters.value?.[id];
-		
-		if (Array.isArray(currentFilter)) {
-		 	currentFilters.value =  {
-				...currentFilters.value, 
-				[id]: isInFilters(element, id) ? [...currentFilter.filter(value => value !== element)] : [...currentFilter, element]
-			};
+	const reloadPage = (): void => window.location.reload();
 
-			return;
-		}
-
-		if (element === "Активный"  || element === "Неактивный") {
-			currentFilters.value = {
-				...currentFilters.value, 
-				isActive: isInFilters(element, id) ? null : element
-			};
-
-			return;
-		}
-	}
-
-	provide("updateDateFilters", updateDateFilters);
 	provide("updateFilters", updateFilters);
-	provide("isInFilters", isInFilters)
-
-	const getTableFooterString = computed<string>(() => {
-		const amount = USERS.length;
-		return `${currentPage.value} страница из ${Math.ceil(amount / 11)} (${getWordByAmount(amount, "пользователь", "пользователя", "пользователей")})`;
-	});
+	provide("isFilterActive", isFilterActive);
 </script>
 
 <template>
@@ -101,11 +95,11 @@
 			</div>
 			<footer class="content__left-footer">
 				<Pagination 
-					@switchPage="(newPage: number) => currentPage = newPage"
+					@update-page="(newPage: number) => currentPage = newPage"
 					:pages="Math.ceil(USERS.length / 10)"
-					:currentPage="currentPage"
+					:current-page="currentPage"
 				/>
-				<p class="content__left-pages">{{ getTableFooterString }}</p>
+				<p class="content__left-pages">{{ getTableSummary }}</p>
 			</footer>
 		</div>
 		<aside class="content__right">
@@ -130,7 +124,7 @@
 						<path class="stroke" d="M10.75 0V9.45984M10.75 9.45984V20M10.75 9.45984H0.75M10.75 9.45984H20.75" stroke-width="2"/>
 					</svg>
 				</button>
-				<button class="content__right-button">
+				<button @click="reloadPage" class="content__right-button">
 					<svg fill="none" height="18" viewBox="0 0 20 18" width="20">
 						<path class="fill" d="M0 9C0 11.3869 0.903059 13.6761 2.51051 15.364C4.11797 17.0518 6.29814 18 8.57143 18C10.8476 18 13.0286 17.06 14.6667 15.4L13.2381 13.9C12.6385 14.5667 11.915 15.0971 11.1122 15.4583C10.3095 15.8196 9.44475 16.0039 8.57143 16C2.62857 16 -0.342857 8.46 3.85714 4.05C8.05714 -0.36 15.2381 2.77 15.2381 9H12.381L16.1905 13H16.2857L20 9H17.1429C17.1429 6.61305 16.2398 4.32387 14.6323 2.63604C13.0249 0.948211 10.8447 0 8.57143 0C6.29814 0 4.11797 0.948211 2.51051 2.63604C0.903059 4.32387 0 6.61305 0 9Z"/>
 					</svg>
@@ -158,7 +152,7 @@
 			</div>
 			<WeekChart
 				title="Новые пользователи"
-				:config="chartConfig(WEEK_USERS, getLabelsForChart(), USERS_COLORS, theme)"
+				:config="chartConfig(WEEK_USERS, getWeekLabels(), USERS_COLORS, theme)"
 			/>
 		</aside>
 	</main>
@@ -171,9 +165,9 @@
 
 	<UsersSorting
 		@close-popup="toggleSortingPopup"
-		@switch-sorting="switchSorting"
+		@set-sorting="setSorting"
 		:is-visible="isActiveSorting"
-		:current-sorting="currentSorting"
+		:sorting="sorting"
 	/>
 
 	<UsersFilters

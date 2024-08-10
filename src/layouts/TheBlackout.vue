@@ -8,7 +8,7 @@
 	}>();
 
 
-	const onClickBlackout = (event: MouseEvent): void => {
+	const closePopup = (event: MouseEvent): void => {
 		const target = <HTMLElement>event.target;
 
 		target.classList.contains("blackout") && emits("closePopup");
@@ -18,7 +18,7 @@
 
 <template>
 	<div
-		@click="onClickBlackout"
+		@click="closePopup"
 		:class="[
 			'blackout',
 			isVisible && 'active'

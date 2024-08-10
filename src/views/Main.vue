@@ -5,7 +5,7 @@
 	import Analytics from "@/components/Analytics.vue";
 	import Widget from "@/components/Widget.vue";
 	import { chartConfig } from "@/plugins/chartConfig";
-	import { getLabelsForChart } from "@/helpers/charts";
+	import { getWeekLabels } from "@/helpers/charts";
 	import { useTheme } from "@/composables/UseTheme";
 	import { 
 		ANALYTICS, 
@@ -60,11 +60,11 @@
 			</section>
 			<WeekChart
 				title="Продажи"
-				:config="chartConfig(WEEK_SALES, getLabelsForChart(), SALES_COLORS, theme)"
+				:config="chartConfig(WEEK_SALES, getWeekLabels(), SALES_COLORS, theme)"
 			/>
 			<WeekChart
 				title="Новые пользователи"
-				:config="chartConfig(WEEK_USERS, getLabelsForChart(), USERS_COLORS, theme)"
+				:config="chartConfig(WEEK_USERS, getWeekLabels(), USERS_COLORS, theme)"
 			/>
 		</aside>
 	</main>

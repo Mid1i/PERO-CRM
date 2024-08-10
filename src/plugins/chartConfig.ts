@@ -1,6 +1,6 @@
 import { ChartConfiguration } from "chart.js";
 import type { TypeThemes } from "@/types/TypeThemes";
-import { IChartColors } from "@/interfaces/IChartColors";
+import type { IChartColors } from "@/interfaces/IChartColors";
 
 
 export const chartConfig = (data: number[], labels: string[], colors: IChartColors, theme: TypeThemes): ChartConfiguration => ({

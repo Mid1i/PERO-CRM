@@ -10,15 +10,15 @@
 		labels: string[]
 	}>();
 
-	const onCreateChart = (): void => {
+	const createChart = (): void => {
 		if (canvasRef.value) {
-			onDestroyChart();
+			destroyChart();
 			
 			chart = new Chart(canvasRef.value, chartConfig(props.data, props.labels, props.colors, theme.value));
 		}
 	};
 
-	let { canvasRef, chart, onDestroyChart, theme } = useChart(onCreateChart);
+	let { canvasRef, chart, destroyChart, theme } = useChart(createChart);
 </script>
 
 

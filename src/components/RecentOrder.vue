@@ -1,6 +1,6 @@
 <script setup lang="ts">
 	import type { IRecentOrder } from "@/interfaces/IRecentOrder";
-	import { onFormatPrice } from "@/helpers/formatters";
+	import { formatPrice } from "@/helpers/formatters";
 	
 	
 	defineProps<IRecentOrder>();
@@ -11,7 +11,7 @@
 	<tr class="order">
 		<td class="order__item">{{ id }}</td>
 		<td class="order__item">{{ creationDate }}</td>
-		<td class="order__item">{{ onFormatPrice(totalPrice) }}</td>
+		<td class="order__item">{{ formatPrice(totalPrice) }}</td>
 		<td	:class="['order__item', { delivered: status === 'Доставлен' }, { canceled: status === 'Отменен' }]">{{ status }}</td>
 		<td class="order__item details">Детали</td>
 	</tr>

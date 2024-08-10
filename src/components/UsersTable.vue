@@ -1,7 +1,7 @@
 <script setup lang="ts">
 	import { computed } from "vue";
 	import type { IUser } from "@/interfaces/IUser";
-	import { onFormatPhone } from "@/helpers/formatters";
+	import { formatPhone } from "@/helpers/formatters";
 	import { USERS_TABLE_HEADERS } from "@/constants";
 
 
@@ -10,7 +10,7 @@
 		users: IUser[]
 	}>();
 
-	const getCurrentPageUsers = computed<IUser[]>(() => props.users.slice((props.currentPage - 1) * 10, props.currentPage * 10));
+	const generatePaginatedData = computed<IUser[]>(() => props.users.slice((props.currentPage - 1) * 10, props.currentPage * 10));
 </script>
 
 
@@ -26,7 +26,7 @@
 			</h3>
 		</header>
 		<div
-			v-for="user in getCurrentPageUsers" 
+			v-for="user in generatePaginatedData" 
 			:key="user.id"
 			class="table__row"
 		>
@@ -39,7 +39,7 @@
 			</span>
 			<span class="table__cell">{{ user.login }}</span>
 			<span class="table__cell">{{ user.email }}</span>
-			<span class="table__cell">{{ onFormatPhone(user.phone) }}</span>
+			<span class="table__cell">{{ formatPhone(user.phone) }}</span>
 			<span class="table__cell">{{ user.role }}</span>
 			<span class="table__cell">{{ user.dateOfBirth }}</span>
 			<span class="table__cell">{{ user.dateOfRegistration }}</span>

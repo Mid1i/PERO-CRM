@@ -6,9 +6,13 @@ type TypeSwitchThemeFunc = (currentTheme: TypeThemes) => void;
 
 
 export const useTheme = (): { theme: Ref<TypeThemes>, switchTheme: TypeSwitchThemeFunc } => {
-	const theme = <Ref<TypeThemes>>inject("theme");
+	const theme = inject<Ref<TypeThemes>>("theme");
+	
+	const switchTheme = inject<TypeSwitchThemeFunc>("switchTheme");
 
-	const switchTheme = <TypeSwitchThemeFunc>inject("switchTheme");
+	if (!switchTheme || !theme) {
+		throw new Error("Theme is not provided!");
+	}
 
 
 	return { theme, switchTheme };

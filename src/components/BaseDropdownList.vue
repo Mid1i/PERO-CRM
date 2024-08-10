@@ -1,34 +1,31 @@
 <script setup lang="ts">
-	import { ref, inject } from "vue";
-	import type { TypeUserFilters, TypeUserFiltersValues } from "@/types/TypeUserFilters";
+	import { ref } from "vue";
+	import type { TypeUserFilters } from "@/types/TypeUserFilters";
 	import type { TypeUserCountries } from "@/types/TypeUserCountries";
 	import type { TypeUserRoles } from "@/types/TypeUserRoles";
 	import type { TypeActivity } from "@/types/TypeActivity";
 	import BaseCheckbox from "@/components/BaseCheckbox.vue";
-
-
-	type TypeElement = TypeUserCountries | TypeUserRoles | TypeActivity;
+	import { useFilters } from "@/composables/useFilters";
 
 
 	defineProps<{
-		id: TypeUserFilters,
+		id: keyof TypeUserFilters,
 		title: string,
-		elements: TypeElement[]
+		elements: TypeUserCountries[] | TypeUserRoles[] | TypeActivity[]
 	}>();
 
 	const isActiveList = ref<boolean>(false);
 
-	const updateFilters = inject<(el: TypeUserFiltersValues, id: TypeUserFilters) => void>("updateFilters");
-	const isInFilters = inject<(el: TypeUserFiltersValues, id: TypeUserFilters) => boolean>("isInFilters");
+	const { isFilterActive, updateFilters } = useFilters();
 
-	const onToggleList = (): boolean => isActiveList.value = !isActiveList.value;
+	const toggleList = (): boolean => isActiveList.value = !isActiveList.value;
 </script>
 
 
 <template>
 	<section class="dropdown">
 		<header
-			@click="onToggleList" 
+			@click="toggleList" 
 			class="dropdown__header"
 		>
 			{{ title }}
@@ -37,16 +34,16 @@
 		<ul :class="['dropdown__list', { active: isActiveList }]">
 			<li
 				v-for="element in elements"
-				:key="element"
+				:key="element + id"
 				class="dropdown__list-el"
 			>
 				<BaseCheckbox 
-					:is-active="isInFilters && isInFilters(element, id)"
-					@click="() => updateFilters && updateFilters(element, id)" 
-					:id="element"
+					:is-active="isFilterActive(element, id)"
+					@click="() => updateFilters(element, id)" 
+					:id="element + id"
 				/>
 				<label 
-					:for="element"
+					:for="element + id"
 					class="dropdown__list-label"
 				>
 					{{ element }}

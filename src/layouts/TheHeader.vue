@@ -1,6 +1,6 @@
 <script setup lang="ts">
-	import { useTheme } from "@/composables/UseTheme"
-import { useRoute } from "vue-router"
+	import { useRoute } from "vue-router";
+	import { useTheme } from "@/composables/UseTheme";
 
 
 	const router = useRoute();

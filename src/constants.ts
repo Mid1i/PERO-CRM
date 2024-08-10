@@ -141,7 +141,11 @@ export const USERS_COLORS: IChartColors = {
 
 export const USERS_TABLE_HEADERS = ["Аватар", "Логин", "Почта", "Номер телефона", "Роль", "Дата рождения", "Дата регистрации"];
 
-export const SORTING_ITEMS: ISorting[] = [
+export const SORTING_ITEMS: {
+	icon: string,
+	title: string,
+	value: ISorting
+}[] = [
 	{
 		icon: `
 			<svg fill="none" height="14" viewBox="0 0 14 14" width="14">
@@ -149,7 +153,10 @@ export const SORTING_ITEMS: ISorting[] = [
 			</svg>
 		`,
 		title: "По логину (A-Z)",
-		value: "login,asc"
+		value: {
+			field: "login",
+			order: "asc"
+		}
 	},
 	{
 		icon: `
@@ -158,7 +165,10 @@ export const SORTING_ITEMS: ISorting[] = [
 			</svg>
 		`,
 		title: "По логину (Z-A)",
-		value: "login,desc"
+		value: {
+			field: "login",
+			order: "desc"
+		}
 	},
 	{
 		icon: `
@@ -167,7 +177,10 @@ export const SORTING_ITEMS: ISorting[] = [
 			</svg>
 		`,
 		title: "По дате рождения (от новых к старым)",
-		value: "dateOfBirth,asc"
+		value: {
+			field: "dateOfBirth",
+			order: "asc"
+		}
 	},
 	{
 		icon: `
@@ -176,7 +189,10 @@ export const SORTING_ITEMS: ISorting[] = [
 			</svg>
 		`,
 		title: "По дате рождения (от старых к новым)",
-		value: "dateOfBirth,desc"
+		value: {
+			field: "dateOfBirth",
+			order: "desc"
+		}
 	},
 	{
 		icon: `
@@ -185,7 +201,10 @@ export const SORTING_ITEMS: ISorting[] = [
 			</svg>
 		`,
 		title: "По дате регистрации (от новых к старым)",
-		value: "dateOfRegistration,asc"
+		value: {
+			field: "dateOfRegistration",
+			order: "asc"
+		}
 	},
 	{
 		icon: `
@@ -194,7 +213,10 @@ export const SORTING_ITEMS: ISorting[] = [
 			</svg>
 		`,
 		title: "По дате регистрации (от старых к новым)",
-		value: "dateOfRegistration,desc"
+		value: {
+			field: "dateOfRegistration",
+			order: "desc"
+		}
 	}
 ];
 

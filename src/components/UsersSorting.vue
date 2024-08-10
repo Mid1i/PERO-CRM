@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import type { TypeSorting } from "@/types/TypeSorting";
+	import { ISorting } from "@/interfaces/ISorting";
 	import BaseCheckbox from "@/components/BaseCheckbox.vue";
 	import TheBlackout from "@/layouts/TheBlackout.vue";
 	import ThePopup from "@/layouts/ThePopup.vue";
@@ -7,13 +7,13 @@
 
 
 	defineProps<{
-		currentSorting: TypeSorting | null,
+		sorting: ISorting | null,
 		isVisible: boolean
 	}>();
 
 	defineEmits<{
 		(e: "closePopup"): void,
-		(e: "switchSorting", value: TypeSorting): void
+		(e: "setSorting", value: ISorting): void
 	}>();
 </script>
 
@@ -32,15 +32,15 @@
 				<ul class="content__list">
 					<li
 						v-for="({ icon, title, value }) in SORTING_ITEMS" 
-						:key="value"
+						:key="value.field + value.order"
 						class="content__list-el"
 					>
 						<BaseCheckbox
-							@click="$emit('switchSorting', value)"
-							:isActive="value === currentSorting"
-							:id="value"
+							@click="$emit('setSorting', value)"
+							:isActive="value === sorting"
+							:id="value.field + value.order"
 						/>
-						<label :for="value" class="content__list-label">
+						<label :for="value.field + value.order" class="content__list-label">
 							<div class="content__list-icon" v-html="icon"></div>
 							{{ title }}
 						</label>

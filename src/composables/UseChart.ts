@@ -7,33 +7,33 @@ import { useTheme } from "@/composables/UseTheme";
 type TypeUseChartReturn = {
 	canvasRef: Ref<HTMLCanvasElement | null>,
 	chart: Chart | null,
-	onDestroyChart: () => void,
+	destroyChart: () => void,
 	theme: Ref<TypeThemes>
 }
 
 
-export const useChart = (onCreateChart: () => void): TypeUseChartReturn => {
+export const useChart = (createChart: () => void): TypeUseChartReturn => {
 	const { theme } = useTheme();
 	const canvasRef = ref<HTMLCanvasElement | null>(null);
 
 	let chart: Chart | null = null;
 	
-	const onDestroyChart = (): void => { 
+	const destroyChart = (): void => { 
 		if (chart) {
 			chart.destroy();
 			chart = null;
 		}
 	}
 
-	onMounted(onCreateChart);
-	onUnmounted(onDestroyChart);
-	watch(theme, onCreateChart);
+	onMounted(createChart);
+	onUnmounted(destroyChart);
+	watch(theme, createChart);
 
 
 	return { 
 		canvasRef, 
 		chart, 
-		onDestroyChart,
+		destroyChart,
 		theme
 	};
 }

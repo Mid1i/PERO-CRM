@@ -1,5 +1,5 @@
 import type { TypeThemes } from "@/types/TypeThemes";
-import { ChartConfiguration, TooltipItem, Chart } from "chart.js";
+import { ChartConfiguration, TooltipItem } from "chart.js";
 
 
 export const chartConfig = (data: number[], labels: string[], colors: string[], theme: TypeThemes): ChartConfiguration => ({

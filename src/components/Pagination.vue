@@ -8,7 +8,7 @@
 	}>();
 
 	defineEmits<{
-		(e: "switchPage", newPage: number): void
+		(e: "updatePage", newPage: number): void
 	}>();
 
 	const getPages = computed<number[]>(() => {
@@ -26,7 +26,7 @@
 <template>
 	<div class="pagination">
 		<button 
-			@click="$emit('switchPage', 1)"
+			@click="$emit('updatePage', 1)"
 			class="pagination__button"
 			:disabled="currentPage === 1"
 		>
@@ -35,7 +35,7 @@
 			</svg>
 		</button>
 		<button 
-			@click="$emit('switchPage', currentPage - 1)"
+			@click="$emit('updatePage', currentPage - 1)"
 			class="pagination__button"
 			:disabled="currentPage === 1"
 		>
@@ -46,7 +46,7 @@
 		<ul class="pagination__list">
 			<li 
 				v-for="page in getPages"
-				@click="$emit('switchPage', page)"
+				@click="$emit('updatePage', page)"
 				:class="['pagination__list-el', { active: currentPage === page }]"
 				:key="page"
 			>
@@ -54,7 +54,7 @@
 			</li>
 		</ul>
 		<button 
-			@click="$emit('switchPage', currentPage + 1)"
+			@click="$emit('updatePage', currentPage + 1)"
 			class="pagination__button"
 			:disabled="currentPage === pages"
 		>
@@ -63,7 +63,7 @@
 			</svg>
 		</button>
 		<button 
-			@click="$emit('switchPage', pages)"
+			@click="$emit('updatePage', pages)"
 			class="pagination__button"
 			:disabled="currentPage === pages"
 		>
