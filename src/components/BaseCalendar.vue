@@ -1,13 +1,13 @@
 <script setup lang="ts">
 	import { ref, computed } from "vue";
 	import type { IDay } from "@/interfaces/IDay";
+	import { getWeekDayNumber } from "@/helpers/calendar";
 	import { formatMonth } from "@/helpers/formatters";
 	import { CALENDAR_HEADERS } from "@/constants";
-	import { getWeekDayNumber } from "@/helpers/calendar";
 
 
 	const props = defineProps<{
-		isActive: boolean
+		isActive: boolean,
 		userDate: Date | null
 	}>();
 
@@ -18,9 +18,9 @@
 	const activeMode = ref<"calendar" | "months" | "years">("calendar");
 	const yearsModePage = ref<number>(0);
 
-	const currentDate = props.userDate || new Date();
-	const currentMonth = ref<number>(currentDate.getMonth());
-	const currentYear = ref<number>(currentDate.getFullYear());
+	const currentDate = ref<Date>(new Date());
+	const currentMonth = ref<number>(currentDate.value.getMonth());
+	const currentYear = ref<number>(currentDate.value.getFullYear());
 
 	const getMonthDates = computed<IDay[]>(() => {
 		let date = new Date(currentYear.value, currentMonth.value);

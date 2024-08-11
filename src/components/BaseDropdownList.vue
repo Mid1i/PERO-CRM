@@ -1,31 +1,28 @@
 <script setup lang="ts">
-	import { ref } from "vue";
-	import type { TypeUserFilters } from "@/types/TypeUserFilters";
-	import type { TypeUserCountries } from "@/types/TypeUserCountries";
-	import type { TypeUserRoles } from "@/types/TypeUserRoles";
-	import type { TypeActivity } from "@/types/TypeActivity";
+	import { ref, inject } from "vue";
+	import type { IFilters } from "@/interfaces/IFilters";
 	import BaseCheckbox from "@/components/BaseCheckbox.vue";
-	import { useFilters } from "@/composables/useFilters";
 
 
 	defineProps<{
-		id: keyof TypeUserFilters,
+		isActiveElement: (element: any, id: keyof IFilters) => boolean,
+		id: keyof IFilters,
 		title: string,
-		elements: TypeUserCountries[] | TypeUserRoles[] | TypeActivity[]
+		elements: string[]
 	}>();
 
+	const generateFilter = inject<(element: any, id: keyof IFilters, step?: "from" | "to") => void>("generateFilter");
+
+	if (!generateFilter) throw new Error("Functions is not provided!");
+
 	const isActiveList = ref<boolean>(false);
-
-	const { isFilterActive, updateFilters } = useFilters();
-
-	const toggleList = (): boolean => isActiveList.value = !isActiveList.value;
 </script>
 
 
 <template>
 	<section class="dropdown">
 		<header
-			@click="toggleList" 
+			@click="() => isActiveList = !isActiveList" 
 			class="dropdown__header"
 		>
 			{{ title }}
@@ -34,16 +31,16 @@
 		<ul :class="['dropdown__list', { active: isActiveList }]">
 			<li
 				v-for="element in elements"
-				:key="element + id"
+				:key="element"
 				class="dropdown__list-el"
 			>
 				<BaseCheckbox 
-					:is-active="isFilterActive(element, id)"
-					@click="() => updateFilters(element, id)" 
-					:id="element + id"
+					@click="generateFilter && generateFilter(element, id)" 
+					:is-active="isActiveElement(element, id)"
+					:id="element"
 				/>
 				<label 
-					:for="element + id"
+					:for="element"
 					class="dropdown__list-label"
 				>
 					{{ element }}

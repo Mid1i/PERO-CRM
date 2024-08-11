@@ -1,6 +1,6 @@
 <script setup lang="ts">
 	import { Chart } from "chart.js/auto";
-	import { useChart } from "@/composables/UseChart";
+	import { useChart } from "@/composables/useChart";
 	import { chartConfig } from "@/plugins/doughnutChartConfig";
 
 

@@ -1,7 +1,8 @@
 <script setup lang="ts">
 	import { ref, provide } from "vue";
+	import type { IFilters } from "@/interfaces/IFilters";
 	import BaseDropdownList from "@/components/BaseDropdownList.vue";
-	import UsersFiltersDate from "@/components/UsersFiltersDate.vue";
+	import BaseDateFilters from "@/components/BaseDateFilters.vue";
 	import TheBlackout from "@/layouts/TheBlackout.vue";
 	import ThePopup from "@/layouts/ThePopup.vue";
 	import { 
@@ -12,59 +13,77 @@
 
 
 	defineProps<{
+		isFilterActive: (element: any, id: keyof IFilters) => boolean,
 		isVisible: boolean
 	}>();
 
 	const emits = defineEmits<{
-		(e: "closePopup"): void
+		(e: "closePopup"): void,
+		(e: "updateFilters", newFilter: Partial<IFilters>): void
 	}>();
 
-	const activePopup = ref<string | null>(null);
+	const activeCalendarPopup = ref<string | null>(null);
 
-	const setActivePopup = (id: string | null): void => {
-		activePopup.value = activePopup.value === id ? null : id;
+	const generateFilter = (element: any, id: keyof IFilters, step?: "from" | "to"): void => {
+		const actions: Record<keyof IFilters, any> = {
+			dateOfRegistration: step && { [step]: element },
+			dateOfBirth: step && { [step]: element },
+			countries: [element],
+			isActive: element,
+			roles: [element]
+		}
+		
+		emits('updateFilters', { [id]: actions[id] });
 	}
 
-	const onClosePopup = (): void => {
-		setActivePopup(null);
+	const updateActiveCalendarPopup = (id: string | null): void => {
+		activeCalendarPopup.value = activeCalendarPopup.value === id ? null : id;
+	}
+
+	const closePopup = (): void => {
+		updateActiveCalendarPopup(null);
 		emits("closePopup");
 	};
 
-	provide("activePopup", activePopup);
-	provide("setActivePopup", setActivePopup);
+	provide("activePopup", activeCalendarPopup);
+	provide("updateActivePopup", updateActiveCalendarPopup);
+	provide("generateFilter", generateFilter);
 </script>
 
 
 <template>
 	<TheBlackout
-		@close-popup="onClosePopup"
+		@close-popup="closePopup"
 		:is-visible="isVisible"
 	>
 		<ThePopup
-			@close-popup="onClosePopup"
+			@close-popup="closePopup"
 			:is-visible="isVisible"	
 			title="Фильтры по пользователям"
 		>
 			<main class="content">
 				<BaseDropdownList
+					:is-active-element="(element: any, id: keyof IFilters) => isFilterActive(element, id)"
 					:elements="COUNTRIES_FILTERS"
 					id="countries"
 					title="Страна"
 				/>
-				<UsersFiltersDate
+				<BaseDateFilters
 					id="dateOfBirth"
 					title="Дата рождения"
 				/>
-				<UsersFiltersDate
+				<BaseDateFilters
 					id="dateOfRegistration"
 					title="Дата регистрации"
 				/>
 				<BaseDropdownList
+					:is-active-element="(element: any, id: keyof IFilters) => isFilterActive(element, id)"
 					:elements="ROLES_FILTERS"
 					id="roles"
 					title="Роль пользователя"
 				/>
 				<BaseDropdownList
+					:is-active-element="(element: any, id: keyof IFilters) => isFilterActive(element, id)"
 					:elements="ACTIVITY_FILTERS"
 					id="isActive"
 					title="Активность пользователя"

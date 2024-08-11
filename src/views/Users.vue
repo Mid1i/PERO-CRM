@@ -1,10 +1,7 @@
 <script setup lang="ts">
-	import { computed, provide, ref } from "vue";
-	import type { TypeUserFilters } from "@/types/TypeUserFilters";
-	import type { TypeActivity } from "@/types/TypeActivity";
+	import { computed, ref } from "vue";
 	import type { ISorting } from "@/interfaces/ISorting";
 	import type { IFilters } from "@/interfaces/IFilters";
-	import type { IDate } from "@/interfaces/IDate";
 	import UsersStatistics from "@/components/UsersStatistics.vue";
 	import UsersFilters from "@/components/UsersFilters.vue";
 	import UsersSorting from "@/components/UsersSorting.vue";
@@ -13,75 +10,66 @@
 	import Pagination from "@/components/Pagination.vue";
 	import WeekChart from "@/components/WeekChart.vue";
 	import { USERS_COLORS, WEEK_USERS } from "@/constants";
-	import { getWeekLabels } from "@/helpers/charts";
 	import { chartConfig } from "@/plugins/chartConfig";
-	import { usePopup } from "@/composables/UsePopup";
-	import { useTheme } from "@/composables/UseTheme";
+	import { usePopup } from "@/composables/usePopup";
+	import { useTheme } from "@/composables/useTheme";
 	import { getWordByAmount } from "@/helpers/words";
+	import { getWeekLabels } from "@/helpers/charts";
 	import { USERS } from "@/users";
 
 
 	const currentPage = ref<number>(1);
-
 	const sorting = ref<ISorting | null>(null);
 	const filters = ref<IFilters>({
-		isActive: null,
 		countries: [],
-		roles: [],
-		dateOfBirth: {},
-		dateOfRegistration: {}
+		roles: []
 	});
+
+	const { theme } = useTheme();
 
 	const { isActivePopup: isActiveSearch, togglePopup: toggleSearchPopup } = usePopup();
 	const { isActivePopup: isActiveSorting, togglePopup: toggleSortingPopup } = usePopup();
 	const { isActivePopup: isActiveFilters, togglePopup: toggleFiltersPopup } = usePopup();
-
-	const { theme } = useTheme();
 
 	const getTableSummary = computed<string>(() => {
 		const amount = USERS.length;
 		return `${currentPage.value} страница из ${Math.ceil(amount / 11)} (${getWordByAmount(amount, "пользователь", "пользователя", "пользователей")})`;
 	});
 
+
 	const setSorting = (value: ISorting): void => {
 		sorting.value = sorting.value === value ? null : value;
 	}
 
-	const isFilterActive = <K extends keyof TypeUserFilters>(element: TypeUserFilters[K], id: K): boolean => {
-		const currentFilter: IFilters[K] = filters.value[id];
-		return Array.isArray(currentFilter) ? (currentFilter as TypeUserFilters[K][]).includes(element) : currentFilter === element;
-	}
+	const isFilterActive = (element: any, id: keyof IFilters): boolean => Array.isArray(filters.value[id]) 
+																																				? (filters.value[id] as string[]).includes(element) 
+																																				: filters.value[id] === element;
 
-	const updateFilters = <K extends keyof TypeUserFilters>(element: TypeUserFilters[K], id: K): void => {
-		const currentFilter: IFilters[K] = filters.value[id];
-		const isActive = isFilterActive(element, id);
-		
-		if (Array.isArray(currentFilter)) {
-		 	const updatedFilter =  isActive ? currentFilter.filter(value => value !== element) : [...currentFilter, element];
-			filters.value[id] = updatedFilter as typeof currentFilter;
-			return;
-		} 
-		
+	const updateFilters = (newFilter: Partial<IFilters>): void => {
+		const id = Object.keys(newFilter)[0] as keyof IFilters;
+
 		if (id === "isActive") {
-			filters.value.isActive = isActive ? null : element as TypeActivity;
-			return;
+			filters.value[id] = filters.value[id] === newFilter[id] ? undefined : newFilter[id];
 		}
 
-		if (typeof currentFilter === "object") {
-			filters.value = {
-				...filters.value,
-				[id]: {
-					...currentFilter,
-					...element as IDate
-				}
+		if (id === "dateOfBirth" || id === "dateOfRegistration") {
+			filters.value[id] = {
+				...filters.value[id],
+				...newFilter[id]
 			}
+		}
+
+		if (id === "countries" || id === "roles") {
+			newFilter[id]?.map(value => {
+				const array = filters.value[id] as string[];
+				const index = array.indexOf(value);
+
+				(index !== -1) ? array.splice(index, 1) : array.push(value);
+			});
 		}
 	}
 
 	const reloadPage = (): void => window.location.reload();
-
-	provide("updateFilters", updateFilters);
-	provide("isFilterActive", isFilterActive);
 </script>
 
 <template>
@@ -172,6 +160,8 @@
 
 	<UsersFilters
 		@close-popup="toggleFiltersPopup"
+		@update-filters="updateFilters"
+		:is-filter-active="isFilterActive"
 		:is-visible="isActiveFilters"
 	/>
 </template>

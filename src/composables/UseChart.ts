@@ -1,7 +1,7 @@
-import {  Ref, ref, onMounted, onUnmounted, watch } from "vue";
 import { Chart } from "chart.js/auto";
+import {  Ref, ref, onMounted, onUnmounted, watch } from "vue";
 import type { TypeThemes } from "@/types/TypeThemes";
-import { useTheme } from "@/composables/UseTheme";
+import { useTheme } from "@/composables/useTheme";
 
 
 type TypeUseChartReturn = {

@@ -2,7 +2,7 @@
 	import { onMounted, ref, watch } from "vue";
 	import type { IWidget } from "@/interfaces/IWidget";
 	import { formatPrice } from "@/helpers/formatters";
-	import { useTheme } from "@/composables/UseTheme";
+	import { useTheme } from "@/composables/useTheme";
 
 
 	const props = defineProps<IWidget>();

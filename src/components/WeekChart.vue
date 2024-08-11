@@ -1,7 +1,7 @@
 <script setup lang="ts">
 	import { Chart, ChartConfiguration, Plugin } from "chart.js/auto";
 	import { drawDatasets } from "@/plugins/chartDatasetDraw";
-	import { useChart } from "@/composables/UseChart";
+	import { useChart } from "@/composables/useChart";
 
 
 	const props = defineProps<{

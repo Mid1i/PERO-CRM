@@ -6,7 +6,7 @@
 	import Widget from "@/components/Widget.vue";
 	import { chartConfig } from "@/plugins/chartConfig";
 	import { getWeekLabels } from "@/helpers/charts";
-	import { useTheme } from "@/composables/UseTheme";
+	import { useTheme } from "@/composables/useTheme";
 	import { 
 		ANALYTICS, 
 		RECENT_ORDERS, 

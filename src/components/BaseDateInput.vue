@@ -1,46 +1,44 @@
 <script setup lang="ts">
-	import { computed, inject, ref } from "vue";
-	import type { TypeUserFilters } from "@/types/TypeUserFilters";
+	import { ref, computed, inject } from "vue";
+	import type { IFilters } from "@/interfaces/IFilters";
 	import BaseCalendar from "@/components/BaseCalendar.vue";
-	import { useFilters } from "@/composables/useFilters";
-	import { usePopup } from "@/composables/UsePopup";
+	import { usePopup } from "@/composables/usePopup";
 	import { addLeadingZeros } from "@/helpers/words";
 
-	
+
 	const props = defineProps<{
-		isActive: boolean,
 		step: "from" | "to",
-		id: keyof TypeUserFilters,
+		id: keyof IFilters
 	}>();
 
 	const userDate = ref<Date | null>(null);
 
-	const { updateFilters } = useFilters();
 	const { togglePopup } = usePopup();
 
-	const setActivePopup = inject<(id: string | null) => string | null>("setActivePopup");
+	const generateFilter = inject<(element: any, id: keyof IFilters, step?: "from" | "to") => void>("generateFilter");
+	const updateActivePopup = inject<(id: string | null) => void>("updateActivePopup");
+	const activePopup = inject<string | null>("activePopup");
 
-	const toggleCalendar = (): void => {
-		setActivePopup && setActivePopup(`${props.id},${props.step}`);
-		togglePopup();
-	};
+	if (!generateFilter || !updateActivePopup || !activePopup) throw new Error("Functions is not provided!");
 
 	const updateUserDate = (date: Date): void => {
-		updateFilters({ [props.step]: date }, props.id);
+		generateFilter({ [props.step]: date }, props.id, props.step);
 		userDate.value = date;
 		toggleCalendar();
 	};
 
-	const onClearDate = (): void => {
-		setActivePopup && setActivePopup(null);
-		updateFilters({ [props.step]: undefined }, props.id);
+	const clearUserDate = (): void => {
+		generateFilter({ [props.step]: undefined }, props.id, props.step);
+		updateActivePopup(null);
 		userDate.value = null;
 	}
 
-	const getFormattedDate = computed<string>(() => {
-		const date = userDate.value;
-		return date ? `${addLeadingZeros(date.getDate())}.${addLeadingZeros(date.getMonth() + 1)}.${addLeadingZeros(date.getFullYear())}` : "";
-	});
+	const toggleCalendar = (): void => {
+		updateActivePopup(`${props.id},${props.step}`);
+		togglePopup();
+	};
+
+	const getFormattedDate = computed<string>(() => userDate.value ? `${addLeadingZeros(userDate.value.getDate())}.${addLeadingZeros(userDate.value.getMonth() + 1)}.${addLeadingZeros(userDate.value.getFullYear())}` : "");
 </script>
 
 
@@ -53,7 +51,7 @@
 			</svg>
 		</button>
 		<button 
-			@click="onClearDate"
+			@click="clearUserDate"
 			:class="['wrapper__cross', { active: !!userDate }]"
 		>
 			<svg fill="none" height="20" viewBox="0 0 20 20" width="20">
@@ -62,7 +60,7 @@
 		</button>
 		<BaseCalendar
 			@update-date="updateUserDate"
-			:is-active="isActive"
+			:is-active="activePopup === `${id},${step}`"
 			:user-date="userDate"
 		/>
 	</div>

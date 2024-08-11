@@ -1,15 +1,12 @@
 <script setup lang="ts">
-	import BaseDateInput from "@/components/BaseDateInput.vue"
-	import type { TypeUserFilters } from "@/types/TypeUserFilters";
-	import { inject } from "vue";
+	import type { IFilters } from "@/interfaces/IFilters";
+	import BaseDateInput from "@/components/BaseDateInput.vue";
 
 
 	defineProps<{
-		id: keyof TypeUserFilters,
+		id: keyof IFilters,
 		title: string
 	}>();
-
-	const activePopup = inject<string | null>("activePopup");
 </script>
 
 
@@ -20,7 +17,6 @@
 			<div class="filter__row-field">
 				<span class="filter__row-text">С</span>
 				<BaseDateInput
-					:is-active="activePopup === `${id},from`"
 					:id="id"
 					step="from"
 				/>
@@ -28,7 +24,6 @@
 			<div class="filter__row-field">
 				<span class="filter__row-text">По</span>
 				<BaseDateInput
-					:is-active="activePopup === `${id},to`"
 					:id="id"
 					step="to"
 				/>

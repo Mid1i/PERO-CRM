@@ -3,7 +3,7 @@
 	import BaseSearchInput from "@/components/BaseSearchInput.vue";
 	import TheBlackout from "@/layouts/TheBlackout.vue";
 	import ThePopup from "@/layouts/ThePopup.vue";
-	import { useSearch } from "@/composables/UseSearch";
+	import { useSearch } from "@/composables/useSearch";
 	import { formatPhone } from "@/helpers/formatters";
 
 	const props = defineProps<{
