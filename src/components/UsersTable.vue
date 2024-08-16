@@ -1,16 +1,18 @@
 <script setup lang="ts">
-	import { computed } from "vue";
 	import type { IUser } from "@/interfaces/IUser";
-	import { formatPhone } from "@/helpers/formatters";
+	import { formatPhone, formatDate } from "@/helpers/formatters";
 	import { USERS_TABLE_HEADERS } from "@/constants";
 
 
-	const props = defineProps<{
+	defineProps<{
 		currentPage: number,
-		users: IUser[]
+		isLoading: boolean,
+		users: IUser[] | null
 	}>();
 
-	const generatePaginatedData = computed<IUser[]>(() => props.users.slice((props.currentPage - 1) * 10, props.currentPage * 10));
+	defineEmits<{
+		(e: "clickUser", user: IUser): void
+	}>();
 </script>
 
 
@@ -26,7 +28,8 @@
 			</h3>
 		</header>
 		<div
-			v-for="user in generatePaginatedData" 
+			@click="$emit('clickUser', user)"
+			v-for="user in users" 
 			:key="user.id"
 			class="table__row"
 		>
@@ -41,8 +44,8 @@
 			<span class="table__cell">{{ user.email }}</span>
 			<span class="table__cell">{{ formatPhone(user.phone) }}</span>
 			<span class="table__cell">{{ user.role }}</span>
-			<span class="table__cell">{{ user.dateOfBirth }}</span>
-			<span class="table__cell">{{ user.dateOfRegistration }}</span>
+			<span class="table__cell">{{ formatDate(user.dateOfBirth) }}</span>
+			<span class="table__cell">{{ formatDate(user.dateOfRegistration) }}</span>
 		</div>
 	</section>
 </template>
@@ -55,15 +58,15 @@
 
 	.table {
 		display: flex;
-		flex: 1 0 auto;
+		flex: 1 1 auto;
 		flex-direction: column;
 
 		&__row,
 		&__header {
 			align-items: center;
-			column-gap: 5px;
-			display: grid;
-			grid-template-columns: 70px repeat(6, 1fr);
+			display: flex;
+			position: relative;
+			gap: 10px;
 		}
 
 		&__row {
@@ -80,18 +83,24 @@
 		}
 
 		&__cell {
+			flex: 1;
+
 			@include text;
 			color: currentColor;
 			font-weight: inherit;
 			text-align: left;
-
-			text-overflow: ellipsis;
+			
 			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+
+			&:first-child {
+				flex: 0 0 70px;
+			}
 
 			&.header {
 				@include h3;
 				text-align: left;
-				white-space: nowrap;
 			}
 
 			&:last-child {
@@ -100,6 +109,9 @@
 		}
 
 		&__avatar {
+			border-radius: 100%;
+
+			overflow: hidden;
 			height: 40px;
 			width: 40px;
 		}

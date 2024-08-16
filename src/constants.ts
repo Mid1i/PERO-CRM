@@ -4,8 +4,8 @@ import type { TypeActivity } from "@/types/TypeActivity";
 import type { TypeWeekDays } from '@/types/TypeWeekDays';
 import type { IRecentOrder } from "@/interfaces/IRecentOrder";
 import type { IChartColors } from "@/interfaces/IChartColors"
+import type { TypeSorting } from "@/types/TypeSorting";
 import type { IAnalytics } from "@/interfaces/IAnalytics";
-import type { ISorting } from "@/interfaces/ISorting";
 import type { IWidget } from "@/interfaces/IWidget";
 
 
@@ -144,7 +144,7 @@ export const USERS_TABLE_HEADERS = ["Аватар", "Логин", "Почта", 
 export const SORTING_ITEMS: {
 	icon: string,
 	title: string,
-	value: ISorting
+	value: TypeSorting
 }[] = [
 	{
 		icon: `
@@ -153,10 +153,7 @@ export const SORTING_ITEMS: {
 			</svg>
 		`,
 		title: "По логину (A-Z)",
-		value: {
-			field: "login",
-			order: "asc"
-		}
+		value: "login"
 	},
 	{
 		icon: `
@@ -165,10 +162,7 @@ export const SORTING_ITEMS: {
 			</svg>
 		`,
 		title: "По логину (Z-A)",
-		value: {
-			field: "login",
-			order: "desc"
-		}
+		value: "-login"
 	},
 	{
 		icon: `
@@ -177,10 +171,7 @@ export const SORTING_ITEMS: {
 			</svg>
 		`,
 		title: "По дате рождения (от новых к старым)",
-		value: {
-			field: "dateOfBirth",
-			order: "asc"
-		}
+		value: "-dateOfBirth"
 	},
 	{
 		icon: `
@@ -189,10 +180,7 @@ export const SORTING_ITEMS: {
 			</svg>
 		`,
 		title: "По дате рождения (от старых к новым)",
-		value: {
-			field: "dateOfBirth",
-			order: "desc"
-		}
+		value: "dateOfBirth"
 	},
 	{
 		icon: `
@@ -201,10 +189,7 @@ export const SORTING_ITEMS: {
 			</svg>
 		`,
 		title: "По дате регистрации (от новых к старым)",
-		value: {
-			field: "dateOfRegistration",
-			order: "asc"
-		}
+		value: "-dateOfRegistration"
 	},
 	{
 		icon: `
@@ -213,10 +198,7 @@ export const SORTING_ITEMS: {
 			</svg>
 		`,
 		title: "По дате регистрации (от старых к новым)",
-		value: {
-			field: "dateOfRegistration",
-			order: "desc"
-		}
+		value: "dateOfRegistration"
 	}
 ];
 

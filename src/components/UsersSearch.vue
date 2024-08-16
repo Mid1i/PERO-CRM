@@ -4,11 +4,10 @@
 	import TheBlackout from "@/layouts/TheBlackout.vue";
 	import ThePopup from "@/layouts/ThePopup.vue";
 	import { useSearch } from "@/composables/useSearch";
-	import { formatPhone } from "@/helpers/formatters";
+	import { formatPhone, formatDate } from "@/helpers/formatters";
 
-	const props = defineProps<{
-		isVisible: boolean,
-		users: IUser[]
+	defineProps<{
+		isVisible: boolean
 	}>();
 
 	const emits = defineEmits<{
@@ -21,7 +20,7 @@
 		clearSearch, 
 		highlightMatches, 
 		generateResultsMessage 
-	} = useSearch<IUser>(props.users, ["login", "email"], () => emits("closePopup"));
+	} = useSearch<IUser>("/users", "login", () => emits("closePopup"));
 </script>
 
 
@@ -38,10 +37,10 @@
 			<main class="content">
 				<BaseSearchInput
 					v-model="searchRequest"
-					placeholder="Введите логин или почту пользователя"
+					placeholder="Введите логин пользователя"
 				/>
-				<section :class="['content__results', { empty: results.length === 0 }]">
-					<h3 v-if="results.length === 0" class="content__title">{{ !searchRequest ? "Здесь будут показаны результаты" : "Ничего не найдено" }}</h3>
+				<section :class="['content__results', { empty: !results || results.length === 0 }]">
+					<h3 v-if="!results || results.length === 0" class="content__title">{{ !searchRequest ? "Здесь будут показаны результаты" : "Ничего не найдено" }}</h3>
 					<template v-else>
 						<h3 class="content__title">{{ generateResultsMessage }}</h3>
 						<ul class="content__list">
@@ -58,8 +57,8 @@
 									>
 								</div>
 								<h6 class="content__list-title" v-html="highlightMatches(user.login)"></h6>
-								<span class="content__list-text date">На сайте с <b>{{ user.dateOfRegistration }}</b></span>
-								<span class="content__list-text email" v-html="highlightMatches(user.email)"></span>
+								<span class="content__list-text date">На сайте с <b>{{ formatDate(user.dateOfRegistration) }}</b></span>
+								<span class="content__list-text email">{{ user.email }}</span>
 								<span class="content__list-text phone">{{ formatPhone(user.phone) }}</span>
 								<span class="content__list-text country">{{ user.country }}</span>
 							</li>

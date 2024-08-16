@@ -1,7 +1,10 @@
 <script setup lang="ts">
-	import { computed, ref } from "vue";
-	import type { ISorting } from "@/interfaces/ISorting";
+	import { computed, ref, onMounted, watch } from "vue";
+	import type { IApi } from "@/interfaces/IApi";
+	import type { IUser } from "@/interfaces/IUser";
 	import type { IFilters } from "@/interfaces/IFilters";
+	import type { TypeSorting } from "@/types/TypeSorting";
+	import UsersInformation from "@/components/UsersInformation.vue";
 	import UsersStatistics from "@/components/UsersStatistics.vue";
 	import UsersFilters from "@/components/UsersFilters.vue";
 	import UsersSorting from "@/components/UsersSorting.vue";
@@ -15,11 +18,13 @@
 	import { useTheme } from "@/composables/useTheme";
 	import { getWordByAmount } from "@/helpers/words";
 	import { getWeekLabels } from "@/helpers/charts";
-	import { USERS } from "@/users";
+	import { useApi } from "@/composables/useApi";
+	import { debounce } from "@/helpers/debounce";
 
 
 	const currentPage = ref<number>(1);
-	const sorting = ref<ISorting | null>(null);
+	const currentUser = ref<IUser | null>(null);
+	const sorting = ref<TypeSorting | null>(null);
 	const filters = ref<IFilters>({
 		countries: [],
 		roles: []
@@ -27,18 +32,22 @@
 
 	const { theme } = useTheme();
 
+	const { data, isLoading, fetchData } = useApi<IApi<IUser[]>>();
+
 	const { isActivePopup: isActiveSearch, togglePopup: toggleSearchPopup } = usePopup();
 	const { isActivePopup: isActiveSorting, togglePopup: toggleSortingPopup } = usePopup();
 	const { isActivePopup: isActiveFilters, togglePopup: toggleFiltersPopup } = usePopup();
+	const { isActivePopup: isActiveInfo, togglePopup: toggleInfoPopup } = usePopup();
 
 	const getTableSummary = computed<string>(() => {
-		const amount = USERS.length;
-		return `${currentPage.value} страница из ${Math.ceil(amount / 11)} (${getWordByAmount(amount, "пользователь", "пользователя", "пользователей")})`;
+		const meta = data.value?.meta;
+		return meta ? `${currentPage.value} страница из ${meta.total_pages} (${getWordByAmount(meta.total_items, "пользователь", "пользователя", "пользователей")})` : "";
 	});
 
 
-	const setSorting = (value: ISorting): void => {
+	const setSorting = (value: TypeSorting): void => {
 		sorting.value = sorting.value === value ? null : value;
+		currentPage.value = 1;
 	}
 
 	const isFilterActive = (element: any, id: keyof IFilters): boolean => Array.isArray(filters.value[id]) 
@@ -70,21 +79,37 @@
 	}
 
 	const reloadPage = (): void => window.location.reload();
+
+	const showUserInfo = (user: IUser): void => {
+		currentUser.value = user;
+		toggleInfoPopup();
+	}
+
+	const fetchUsers = (): Promise<void> => fetchData("/users", {
+		sortBy: sorting.value,
+		page: currentPage.value, 
+		limit: 10 
+	});
+
+	onMounted(fetchUsers);
+	watch([currentPage, sorting], debounce(fetchUsers));
 </script>
 
 <template>
   <main class="content">
-		<div class="content__left">
+		<div v-if="data" class="content__left">
 			<div class="content__left-wrapper">
 				<UsersTable
+					@click-user="showUserInfo"
 					:current-page="currentPage"
-					:users="USERS"
+					:is-loading="isLoading"
+					:users="data.items"
 				/>
 			</div>
 			<footer class="content__left-footer">
 				<Pagination 
 					@update-page="(newPage: number) => currentPage = newPage"
-					:pages="Math.ceil(USERS.length / 10)"
+					:pages="data.meta.total_pages"
 					:current-page="currentPage"
 				/>
 				<p class="content__left-pages">{{ getTableSummary }}</p>
@@ -147,7 +172,6 @@
 
 	<UsersSearch 
 		@close-popup="toggleSearchPopup"
-		:users="USERS"
 		:is-visible="isActiveSearch"
 	/>
 
@@ -163,6 +187,12 @@
 		@update-filters="updateFilters"
 		:is-filter-active="isFilterActive"
 		:is-visible="isActiveFilters"
+	/>
+
+	<UsersInformation
+		@close-popup="toggleInfoPopup"
+		:is-visible="isActiveInfo"
+		:user="currentUser"
 	/>
 </template>
 

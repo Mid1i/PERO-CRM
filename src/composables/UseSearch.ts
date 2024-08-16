@@ -1,20 +1,23 @@
-import { Ref, ComputedRef, ShallowRef, ref, computed, watch, shallowRef } from "vue";
+import { Ref, UnwrapRef, ComputedRef, ref, computed, watch } from "vue";
 import { getWordByAmount } from "@/helpers/words";
+import { useApi } from "@/composables/useApi";
 import { debounce } from "@/helpers/debounce";
 
 
 type TypeUseSearchReturn<T> = {
 	searchRequest: Ref<string>,
-	results: ShallowRef<T[]>,
+	results: Ref<UnwrapRef<T[]> | null>,
 	clearSearch: () => void,
 	highlightMatches: (text: string) => string,
 	generateResultsMessage: ComputedRef<string>
 };
 
 
-export const useSearch = <T extends Record<string, any>>(data: T[], searchFields: (keyof T)[], clearFunction: () => void): TypeUseSearchReturn<T> => {
+export const useSearch = <T>(url: string, searchField: keyof T, clearFunction: () => void): TypeUseSearchReturn<T> => {
 	const searchRequest = ref<string>("");
-	const results = shallowRef<T[]>([]);
+
+	const { data: results, fetchData } = useApi<T[]>();
+
 
 	const clearSearch = (): void => {
 		setTimeout(() => (searchRequest.value = ""), 300);
@@ -23,7 +26,7 @@ export const useSearch = <T extends Record<string, any>>(data: T[], searchFields
 
 	const search = (): void => {
 		const request = searchRequest.value.toLowerCase();
-		results.value = request ? data.filter(value => searchFields.some(field => value[field].toString().toLowerCase().includes(request))) : [];
+		request ? fetchData(url, { [searchField]: `*${request}` }) : results.value = null;
 	}
 
 	const highlightMatches = (text: string): string => {
@@ -35,8 +38,8 @@ export const useSearch = <T extends Record<string, any>>(data: T[], searchFields
 	}
 
 	const generateResultsMessage = computed<string>(() => {
-		const length = results.value.length;
-		return `Найден${length % 10 !== 1 ? 'о' : ''} ${getWordByAmount(length, 'результат', 'результата', 'результатов')}`;
+		const length = results.value?.length;
+		return length ? `Найден${length % 10 !== 1 ? 'о' : ''} ${getWordByAmount(length, 'результат', 'результата', 'результатов')}` : "";
 	});
 
 	watch(searchRequest, debounce(<() => T[]>search));

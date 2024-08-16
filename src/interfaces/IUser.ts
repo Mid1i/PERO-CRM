@@ -6,6 +6,7 @@ export interface IUser {
 	id: number,
 	isActive: boolean,
 	avatar: string,
+	fullName: string,
 	login: string,
 	email: string,
 	gender: boolean,
@@ -13,5 +14,7 @@ export interface IUser {
 	country: TypeUserCountries,
 	role: TypeUserRoles,
 	dateOfBirth: string,
-	dateOfRegistration: string
+	dateOfRegistration: string,
+	totalOrders: number,
+	totalRevenue: number
 }
