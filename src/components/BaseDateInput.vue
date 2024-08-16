@@ -2,6 +2,7 @@
 	import { ref, computed, inject } from "vue";
 	import type { IFilters } from "@/interfaces/IFilters";
 	import BaseCalendar from "@/components/BaseCalendar.vue";
+	import { formatResponseDate } from "@/helpers/formatters";
 	import { usePopup } from "@/composables/usePopup";
 	import { addLeadingZeros } from "@/helpers/words";
 
@@ -22,7 +23,7 @@
 	if (!generateFilter || !updateActivePopup || !activePopup) throw new Error("Functions is not provided!");
 
 	const updateUserDate = (date: Date): void => {
-		generateFilter({ [props.step]: date }, props.id, props.step);
+		generateFilter({ [props.step]: formatResponseDate(date) }, props.id);
 		userDate.value = date;
 		toggleCalendar();
 	};

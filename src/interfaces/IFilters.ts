@@ -7,8 +7,8 @@ import type { IDate } from "@/interfaces/IDate";
 
 export interface IFilters {
 	isActive?: boolean,
-	countries: TypeUserCountries[],
-	roles: TypeUserRoles[],
+	country: TypeUserCountries[],
+	role: TypeUserRoles[],
 	dateOfBirth?: IDate,
 	dateOfRegistration?: IDate
 }

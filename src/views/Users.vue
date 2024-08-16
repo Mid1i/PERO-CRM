@@ -20,14 +20,15 @@
 	import { getWeekLabels } from "@/helpers/charts";
 	import { useApi } from "@/composables/useApi";
 	import { debounce } from "@/helpers/debounce";
+	import { formParams } from "@/helpers/api";
 
 
 	const currentPage = ref<number>(1);
 	const currentUser = ref<IUser | null>(null);
 	const sorting = ref<TypeSorting | null>(null);
 	const filters = ref<IFilters>({
-		countries: [],
-		roles: []
+		country: [],
+		role: []
 	});
 
 	const { theme } = useTheme();
@@ -50,9 +51,15 @@
 		currentPage.value = 1;
 	}
 
-	const isFilterActive = (element: any, id: keyof IFilters): boolean => Array.isArray(filters.value[id]) 
-																																				? (filters.value[id] as string[]).includes(element) 
-																																				: filters.value[id] === element;
+	const isFilterActive = (element: any, id: keyof IFilters): boolean => {
+		const currentFilter = filters.value[id];
+
+		if (currentFilter !== undefined) return (currentFilter && element === "Активный") || (!currentFilter && element === "Неактивный");
+
+		if (Array.isArray(currentFilter)) return (currentFilter as string[]).includes(element);
+
+		return false;
+	}
 
 	const updateFilters = (newFilter: Partial<IFilters>): void => {
 		const id = Object.keys(newFilter)[0] as keyof IFilters;
@@ -68,7 +75,7 @@
 			}
 		}
 
-		if (id === "countries" || id === "roles") {
+		if (id === "country" || id === "role") {
 			newFilter[id]?.map(value => {
 				const array = filters.value[id] as string[];
 				const index = array.indexOf(value);
@@ -86,13 +93,16 @@
 	}
 
 	const fetchUsers = (): Promise<void> => fetchData("/users", {
-		sortBy: sorting.value,
+		limit: 10, 
 		page: currentPage.value, 
-		limit: 10 
+		sortBy: sorting.value,
+		...filters.value,
+		...formParams(filters.value.role, "role"),
+		...formParams(filters.value.country, "country")
 	});
 
 	onMounted(fetchUsers);
-	watch([currentPage, sorting], debounce(fetchUsers));
+	watch([currentPage, sorting, filters], debounce(fetchUsers), { deep: true });
 </script>
 
 <template>

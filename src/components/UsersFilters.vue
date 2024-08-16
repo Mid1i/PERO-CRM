@@ -24,13 +24,13 @@
 
 	const activeCalendarPopup = ref<string | null>(null);
 
-	const generateFilter = (element: any, id: keyof IFilters, step?: "from" | "to"): void => {
+	const generateFilter = (element: any, id: keyof IFilters): void => {
 		const actions: Record<keyof IFilters, any> = {
-			dateOfRegistration: step && { [step]: element },
-			dateOfBirth: step && { [step]: element },
-			countries: [element],
-			isActive: element,
-			roles: [element]
+			dateOfRegistration: element,
+			dateOfBirth: element,
+			country: [element],
+			isActive: element === "Активный" ? true : false,
+			role: [element]
 		}
 		
 		emits('updateFilters', { [id]: actions[id] });
@@ -65,7 +65,7 @@
 				<BaseDropdownList
 					:is-active-element="(element: any, id: keyof IFilters) => isFilterActive(element, id)"
 					:elements="COUNTRIES_FILTERS"
-					id="countries"
+					id="country"
 					title="Страна"
 				/>
 				<BaseDateFilters
@@ -79,7 +79,7 @@
 				<BaseDropdownList
 					:is-active-element="(element: any, id: keyof IFilters) => isFilterActive(element, id)"
 					:elements="ROLES_FILTERS"
-					id="roles"
+					id="role"
 					title="Роль пользователя"
 				/>
 				<BaseDropdownList
