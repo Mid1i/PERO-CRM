@@ -26,6 +26,7 @@
 <template>
 	<div class="pagination">
 		<button 
+			v-if="pages > 1"
 			@click="$emit('updatePage', 1)"
 			class="pagination__button"
 			:disabled="currentPage === 1"
@@ -35,6 +36,7 @@
 			</svg>
 		</button>
 		<button 
+			v-if="pages > 1"
 			@click="$emit('updatePage', currentPage - 1)"
 			class="pagination__button"
 			:disabled="currentPage === 1"
@@ -54,6 +56,7 @@
 			</li>
 		</ul>
 		<button 
+			v-if="pages > 1"
 			@click="$emit('updatePage', currentPage + 1)"
 			class="pagination__button"
 			:disabled="currentPage === pages"
@@ -63,6 +66,7 @@
 			</svg>
 		</button>
 		<button 
+			v-if="pages > 1"
 			@click="$emit('updatePage', pages)"
 			class="pagination__button"
 			:disabled="currentPage === pages"
@@ -106,8 +110,6 @@
 			display: flex;
 			justify-content: center;
 			gap: 5px;
-
-			width: 120px;
 
 			&-el {
 				align-items: center;
