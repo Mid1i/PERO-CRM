@@ -4,7 +4,8 @@
 
 	const props = defineProps<{
 		currentPage: number,
-		pages: number
+		isLoading?: boolean,
+		pages: number | undefined
 	}>();
 
 	defineEmits<{
@@ -12,11 +13,13 @@
 	}>();
 
 	const getPages = computed<number[]>(() => {
-		if (props.pages < 4) return Array.from({ length: props.pages }, (_, index) => index + 1);
+		const totalPages = props.pages ?? 0;
+		
+		if (totalPages < 4) return Array.from({ length: totalPages }, (_, index) => index + 1);
 		
 		if (props.currentPage < 4) return [1, 2, 3, 4];
 
-		if (props.currentPage > props.pages - 3) return [...Array(4)].map((_, index) => props.pages - 3 + index);
+		if (props.currentPage > totalPages - 3) return [...Array(4)].map((_, index) => totalPages - 3 + index);
 
 		return [props.currentPage - 1, props.currentPage, props.currentPage + 1];
 	});
@@ -24,7 +27,8 @@
 
 
 <template>
-	<div class="pagination">
+	<div v-if="isLoading || !pages" class="loading"></div>
+	<div v-else class="pagination">
 		<button 
 			v-if="pages > 1"
 			@click="$emit('updatePage', 1)"
@@ -136,6 +140,13 @@
 				}
 			}
 		}
+	}
+
+	.loading {
+		@include skeleton;
+
+		height: 25px;
+		width: 250px;
 	}
 
 

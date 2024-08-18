@@ -24,7 +24,7 @@
 
 
 	const currentPage = ref<number>(1);
-	const currentUser = ref<IUser | null>(null);
+	const currentUserID = ref<number | null>(null);
 	const sorting = ref<TypeSorting | null>(null);
 	const filters = ref<IFilters>({
 		country: [],
@@ -87,8 +87,8 @@
 
 	const reloadPage = (): void => window.location.reload();
 
-	const showUserInfo = (user: IUser): void => {
-		currentUser.value = user;
+	const showUserInfo = (id: number): void => {
+		currentUserID.value = id;
 		toggleInfoPopup();
 	}
 
@@ -107,22 +107,24 @@
 
 <template>
   <main class="content">
-		<div v-if="data" class="content__left">
+		<div class="content__left">
 			<div class="content__left-wrapper">
 				<UsersTable
 					@click-user="showUserInfo"
 					:current-page="currentPage"
 					:is-loading="isLoading"
-					:users="data.items"
+					:users="data?.items"
 				/>
 			</div>
 			<footer class="content__left-footer">
-				<Pagination 
+				<Pagination
 					@update-page="(newPage: number) => currentPage = newPage"
-					:pages="data.meta.total_pages"
+					:pages="data?.meta.total_pages"
 					:current-page="currentPage"
+					:is-loading="isLoading"
 				/>
-				<p class="content__left-pages">{{ getTableSummary }}</p>
+				<div v-if="isLoading" class="content__left-loading"></div>
+				<p v-else class="content__left-pages">{{ getTableSummary }}</p>
 			</footer>
 		</div>
 		<aside class="content__right">
@@ -202,7 +204,7 @@
 	<UsersInformation
 		@close-popup="toggleInfoPopup"
 		:is-visible="isActiveInfo"
-		:user="currentUser"
+		:id="currentUserID"
 	/>
 </template>
 
@@ -226,6 +228,13 @@
 				display: flex;
 				flex: 1 0 auto;
 				width: 100%;
+			}
+
+			&-loading {
+				@include skeleton;
+
+				height: 25px;
+				width: 250px;
 			}
 
 			&-footer {

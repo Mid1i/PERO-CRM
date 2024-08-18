@@ -47,3 +47,30 @@
 
 	padding: 25px;
 }
+
+@mixin skeleton {
+	background: $--skeleton-darker;
+	border-radius: 0.52vw;
+	position: relative;
+	overflow: hidden;
+
+	&::before {
+		animation: skeleton-animation 2s infinite;
+		background: $--linear-skeleton;
+		content: "";
+		position: absolute;
+		left: 0px;
+		top: 0px;
+		height: 100%;
+		width: 100%;
+	}
+}
+
+@keyframes skeleton-animation {
+	0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}

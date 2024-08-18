@@ -7,11 +7,11 @@
 	defineProps<{
 		currentPage: number,
 		isLoading: boolean,
-		users: IUser[] | null
+		users: IUser[] | undefined
 	}>();
 
 	defineEmits<{
-		(e: "clickUser", user: IUser): void
+		(e: "clickUser", id: number): void
 	}>();
 </script>
 
@@ -27,10 +27,17 @@
 				{{ header }}
 			</h3>
 		</header>
+		<div 
+			v-if="isLoading" 
+			v-for="num in 10" 
+			:key="num"
+			class="table__loading"
+		></div>
 		<div
-			@click="$emit('clickUser', user)"
+			@click="$emit('clickUser', user.id)"
 			v-for="user in users" 
 			:key="user.id"
+			v-else
 			class="table__row"
 		>
 			<span class="table__cell">
@@ -67,6 +74,10 @@
 			display: flex;
 			position: relative;
 			gap: 10px;
+		}
+
+		&__header {
+			margin-bottom: 5px;
 		}
 
 		&__row {
@@ -114,6 +125,14 @@
 			overflow: hidden;
 			height: 40px;
 			width: 40px;
+		}
+
+		&__loading {
+			@include skeleton;
+
+			margin-bottom: 7px;
+			height: 60px;
+			width: 100%;
 		}
 	}
 

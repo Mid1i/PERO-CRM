@@ -1,26 +1,30 @@
 <script setup lang="ts">
-	import { ref, watch } from "vue";
+	import { ref, watch, onMounted } from "vue";
 	import type { IUser } from "@/interfaces/IUser";
 	import TheBlackout from "@/layouts/TheBlackout.vue";
 	import BaseInput from "@/components/BaseInput.vue";
 	import ThePopup from "@/layouts/ThePopup.vue";
+	import { useApi } from "@/composables/useApi";
 
 
 	const props = defineProps<{
 		isVisible: boolean,
-		user: IUser | null
+		id: number | null
 	}>();
 
 	const emits = defineEmits<{
 		(e: "closePopup"): void
 	}>();
 
-	const localUser = ref<IUser | null>(null);
+	const currentUser = ref<IUser | null>(null);
 	const isReadonly = ref<boolean>(false);
 
+	const { data, isLoading, fetchData } = useApi<IUser[]>();
 
-	watch(() => props.user, () => localUser.value = props.user, { immediate: true });
-	watch(localUser, () => console.log(localUser.value), { deep: true });
+
+	watch(() => props.id, () => props.id && fetchData("/users", { id: props.id }));
+	watch(isLoading, () => !isLoading.value && (currentUser.value = data.value?.[0] || null));
+	// watch(localUser, () => console.log(localUser.value), { deep: true });
 </script>
 
 
@@ -34,36 +38,36 @@
 			:is-visible="isVisible"	
 			title="Информация по пользователю"
 		>
-			<main v-if="localUser" class="content">
+			<main v-if="!isLoading && currentUser" class="content">
 				<div class="content__top">
 					<div class="content__wrapper">
 						<img 
-							:alt="localUser.login"
-							:src="localUser.avatar" 
+							:alt="currentUser.login"
+							:src="currentUser.avatar" 
 							class="content__wrapper-image"
 						>
 					</div>
 					<div class="content__col">
 						<BaseInput
-							v-model="localUser.login"
+							v-model="currentUser.login"
 							:readonly="isReadonly"
 							label="Логин"
 							type="text"
 						/>
 						<BaseInput
-							v-model="localUser.fullName"
+							v-model="currentUser.fullName"
 							:readonly="isReadonly"
 							label="ФИО"
 							type="text"
 						/>
 						<BaseInput
-							v-model="localUser.email"
+							v-model="currentUser.email"
 							:readonly="isReadonly"
 							label="Email"
 							type="email"
 						/>
 						<BaseInput
-							v-model="localUser.phone"
+							v-model="currentUser.phone"
 							:readonly="isReadonly"
 							label="Телефон"
 							type="text"
