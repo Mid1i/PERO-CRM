@@ -1,19 +1,18 @@
 <script setup lang="ts">
-	import { ref, inject } from "vue";
-	import type { IFilters } from "@/interfaces/IFilters";
+	import { ref } from "vue";
 	import BaseCheckbox from "@/components/BaseCheckbox.vue";
 
 
 	defineProps<{
-		isActiveElement: (element: any, id: keyof IFilters) => boolean,
-		id: keyof IFilters,
+		isActiveElement: (element: any, id: string) => boolean,
+		id: string,
 		title: string,
 		elements: string[]
 	}>();
 
-	const generateFilter = inject<(element: any, id: keyof IFilters, step?: "from" | "to") => void>("generateFilter");
-
-	if (!generateFilter) throw new Error("Functions is not provided!");
+	const emits = defineEmits<{
+		(e: "changeElement", element: any, id: string): void
+	}>();
 
 	const isActiveList = ref<boolean>(false);
 </script>
@@ -35,7 +34,7 @@
 				class="dropdown__list-el"
 			>
 				<BaseCheckbox 
-					@click="generateFilter && generateFilter(element, id)" 
+					@click="$emit('changeElement', element, id)" 
 					:is-active="isActiveElement(element, id)"
 					:id="element"
 				/>

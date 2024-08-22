@@ -1,14 +1,13 @@
-import type { TypeUserCountries } from "@/types/TypeUserCountries";
-import type { TypeUserRoles } from "@/types/TypeUserRoles";
 import type { IDate } from "@/interfaces/IDate";
+import { IUser } from "@/interfaces/IUser";
 
 
 
 
 export interface IFilters {
-	isActive?: boolean,
-	country: TypeUserCountries[],
-	role: TypeUserRoles[],
+	isActive?: IUser["isActive"],
+	country: IUser["country"][],
+	role: IUser["role"][],
 	dateOfBirth?: IDate,
 	dateOfRegistration?: IDate
 }

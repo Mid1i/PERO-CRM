@@ -51,8 +51,8 @@
 		currentPage.value = 1;
 	}
 
-	const isFilterActive = (element: any, id: keyof IFilters): boolean => {
-		const currentFilter = filters.value[id];
+	const isFilterActive = (element: any, id: string): boolean => {
+		const currentFilter = filters.value[id as keyof IFilters];
 
 		if (currentFilter !== undefined) return (currentFilter && element === "Активный") || (!currentFilter && element === "Неактивный");
 

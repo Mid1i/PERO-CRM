@@ -41,7 +41,7 @@
 					<img 
 						alt="Аватар пользователя"
 						class="header__profile-image"
-						src="@/assets/images/avatar.png" 
+						src="@/assets/images/avatar.jpg" 
 					>
 				</div>
 			</div>
@@ -117,6 +117,9 @@
 			}
 
 			&-wrapper {
+				border-radius: 100%;
+
+				overflow: hidden;
 				height: 40px;
 				width: 40px;
 			}

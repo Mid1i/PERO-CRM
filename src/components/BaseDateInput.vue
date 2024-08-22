@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { ref, computed, inject } from "vue";
+	import { ref, computed } from "vue";
 	import type { IFilters } from "@/interfaces/IFilters";
 	import BaseCalendar from "@/components/BaseCalendar.vue";
 	import { formatResponseDate } from "@/helpers/formatters";
@@ -8,34 +8,34 @@
 
 
 	const props = defineProps<{
-		step: "from" | "to",
+		activePopup: string | null,
+		step?: "from" | "to",
 		id: keyof IFilters
+		date?: Date,
 	}>();
 
-	const userDate = ref<Date | null>(null);
+	const emits = defineEmits<{
+		(e: "updateActivePopup", id: string | null): void,
+		(e: "changeDate", element: any, id: keyof IFilters): void
+	}>();
 
+	const userDate = ref<Date | null>(props.date || null);
 	const { togglePopup } = usePopup();
 
-	const generateFilter = inject<(element: any, id: keyof IFilters, step?: "from" | "to") => void>("generateFilter");
-	const updateActivePopup = inject<(id: string | null) => void>("updateActivePopup");
-	const activePopup = inject<string | null>("activePopup");
-
-	if (!generateFilter || !updateActivePopup || !activePopup) throw new Error("Functions is not provided!");
-
 	const updateUserDate = (date: Date): void => {
-		generateFilter({ [props.step]: formatResponseDate(date) }, props.id);
+		emits("changeDate", props.step ? { [props.step]: formatResponseDate(date) } : userDate.value, props.id);
 		userDate.value = date;
 		toggleCalendar();
 	};
 
 	const clearUserDate = (): void => {
-		generateFilter({ [props.step]: undefined }, props.id, props.step);
-		updateActivePopup(null);
+		emits("changeDate", props.step ? { [props.step]: undefined } : userDate.value, props.id);
+		emits("updateActivePopup", null);
 		userDate.value = null;
 	}
 
 	const toggleCalendar = (): void => {
-		updateActivePopup(`${props.id},${props.step}`);
+		emits("updateActivePopup", `${props.id}${props.step ?? ""}`);
 		togglePopup();
 	};
 
@@ -61,7 +61,7 @@
 		</button>
 		<BaseCalendar
 			@update-date="updateUserDate"
-			:is-active="activePopup === `${id},${step}`"
+			:is-active="activePopup === `${id}${step ?? ''}`"
 			:user-date="userDate"
 		/>
 	</div>

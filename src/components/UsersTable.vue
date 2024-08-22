@@ -120,7 +120,7 @@
 		}
 
 		&__avatar {
-			border-radius: 100%;
+			border-radius: 5px;
 
 			overflow: hidden;
 			height: 40px;
@@ -130,9 +130,11 @@
 		&__loading {
 			@include skeleton;
 
-			margin-bottom: 7px;
-			height: 60px;
-			width: 100%;
+			& {
+				margin-bottom: 7px;
+				height: 60px;
+				width: 100%;
+			}
 		}
 	}
 

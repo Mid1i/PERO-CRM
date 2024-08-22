@@ -52,7 +52,6 @@
 		&__input {
 			@include h3;
 			background: $--background-secondary;
-			border-radius: 10px;
 
 			text-overflow: ellipsis;
 
