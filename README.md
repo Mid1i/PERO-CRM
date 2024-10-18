@@ -41,26 +41,26 @@
 
 
 ## Скриншоты сайта:
-<img alt="" src="./src/assets/screenshots/main.png"/>
 - Главная страница
+<img alt="" src="./src/assets/screenshots/main.png"/>
 
-<img alt="" src="./src/assets/screenshots/main-light.png"/>
 - Главная страница (светлая тема)
+<img alt="" src="./src/assets/screenshots/main-light.png"/>
 
-<img alt="" src="./src/assets/screenshots/users.png"/>
 - Пользователи
+<img alt="" src="./src/assets/screenshots/users.png"/>
 
-<img alt="" src="./src/assets/screenshots/users-data-editting.png"/>
 - Пользователи (редактирование и просмотр данных)
+<img alt="" src="./src/assets/screenshots/users-data-editting.png"/>
 
-<img alt="" src="./src/assets/screenshots/users-filters-calendar.png"/>
 - Пользователи (фильтры и календарь)
+<img alt="" src="./src/assets/screenshots/users-filters-calendar.png"/>
 
-<img alt="" src="./src/assets/screenshots/users-search.png"/>
 - Пользователи (поиск)
+<img alt="" src="./src/assets/screenshots/users-search.png"/>
 
-<img alt="" src="./src/assets/screenshots/color-picker.png"/>
 - Выбор цвета
+<img alt="" src="./src/assets/screenshots/color-picker.png"/>
 
-<img alt="" src="./src/assets/screenshots/text-editor.png"/>
 - Редактор текста
+<img alt="" src="./src/assets/screenshots/text-editor.png"/>
