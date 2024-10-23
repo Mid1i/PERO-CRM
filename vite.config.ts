@@ -18,5 +18,9 @@ export default defineConfig({
       "@/types": "/src/types",
       "@/views": "/src/views"
     }
+  },
+  server: {
+    host: true,
+    port: 5173
   }
 })
